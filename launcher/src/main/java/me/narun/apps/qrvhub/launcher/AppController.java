@@ -205,6 +205,13 @@ public class AppController {
                 Log.w(TAG, "clearDeviceOwnerApp failed", e);
             }
         }
+        // No longer device owner, but still a device administrator: Android refuses
+        // to uninstall an active administrator, so give that up as well.
+        try {
+            if (mDpm != null && mDpm.isAdminActive(mAdmin)) mDpm.removeActiveAdmin(mAdmin);
+        } catch (RuntimeException e) {
+            Log.w(TAG, "removeActiveAdmin failed", e);
+        }
     }
 
     private static final String PREF_BOOT_SEEN = "boot_seen";

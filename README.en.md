@@ -106,6 +106,23 @@ QRV-Hub is the set of fixes, measured and tested on the radio.
 * Optional **screen on while talking / while receiving** (off 5 s after).
 * Battery: no continuous microphone, normal Wi-Fi power saving, 15 s keep-alive.
 
+### Screenshots
+
+Taken on the radio itself (160×128, shown at 2×), on a test server with made-up names, hence "TEST" in the header.
+
+|   |   |
+|---|---|
+| <img src="docs/screenshots/login.png" width="320" alt="**Login**: just username and password; the server is built in"> | <img src="docs/screenshots/members.png" width="320" alt="**Members** of your channel"> |
+| **Login**: just username and password; the server is built in | **Members** of your channel |
+| <img src="docs/screenshots/speaking.png" width="320" alt="**Monitoring**: Alpha-1 talks in your channel, Delta-4 in the monitored channel North"> | <img src="docs/screenshots/channels.png" width="320" alt="**Channels**: monitored ones have a blue speaker"> |
+| **Monitoring**: Alpha-1 talks in your channel, Delta-4 in the monitored channel North | **Channels**: monitored ones have a blue speaker |
+| <img src="docs/screenshots/transmitting.png" width="320" alt="**Transmitting** (PTT held)"> | <img src="docs/screenshots/menu.png" width="320" alt="**Options** (MENU)"> |
+| **Transmitting** (PTT held) | **Options** (MENU) |
+| <img src="docs/screenshots/volume.png" width="320" alt="**Volume**: 30 steps on the knob"> | <img src="docs/screenshots/locked.png" width="320" alt="**PTT lock** on ◀/▶"> |
+| **Volume**: 30 steps on the knob | **PTT lock** on ◀/▶ |
+| <img src="docs/screenshots/muted.png" width="320" alt="**Mute**: double-press Power"> | <img src="docs/screenshots/launcher.png" width="320" alt="**QRV-Hub Launcher**: QRV-Hub or Spender Network"> |
+| **Mute**: double-press Power | **QRV-Hub Launcher**: QRV-Hub or Spender Network |
+
 ## Installing on the radio
 
 ### What you need
@@ -115,7 +132,7 @@ QRV-Hub is the set of fixes, measured and tested on the radio.
   [Android SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools)
   (unzip it; on Windows run the commands below in that folder, typing `adb` as `adb.exe` if needed).
 * The three APKs from the [latest release](https://github.com/narunc/QRV-Hub/releases/latest):
-  `QRV-Hub-1.0.0.apk`, `QRV-Hub-Launcher-1.0.0.apk`, `QRV-Hub-Display-1.0.0.apk`.
+  `QRV-Hub-1.0.1.apk`, `QRV-Hub-Launcher-1.0.1.apk`, `QRV-Hub-Display-1.0.1.apk`.
   Put them in the folder where you run the commands.
 
 ### 1. Connect the radio
@@ -133,7 +150,7 @@ add `-s <serial>` after `adb` in every command below.)
 ### 2. Install QRV-Hub Display (screen size)
 
 ```sh
-adb install QRV-Hub-Display-1.0.0.apk
+adb install QRV-Hub-Display-1.0.1.apk
 adb shell wm size 240x200
 adb shell pm grant me.narun.apps.qrvhub.display android.permission.WRITE_SECURE_SETTINGS
 adb shell pm grant me.narun.apps.qrvhub.display android.permission.DUMP
@@ -147,13 +164,13 @@ Android will not run it at boot.
 ### 3. Install QRV-Hub
 
 ```sh
-adb install QRV-Hub-1.0.0.apk
+adb install QRV-Hub-1.0.1.apk
 ```
 
 ### 4. Install QRV-Hub Launcher (home screen)
 
 ```sh
-adb install QRV-Hub-Launcher-1.0.0.apk
+adb install QRV-Hub-Launcher-1.0.1.apk
 adb shell dpm set-device-owner me.narun.apps.qrvhub.launcher/.AdminReceiver
 adb shell am start -n me.narun.apps.qrvhub.launcher/.HomeActivity
 ```
@@ -165,10 +182,12 @@ account); remove them first if `dpm` refuses.
 
 ### 5. First use
 
-The radio shows the launcher with two choices: **Spender Network** and
-**QRV-Hub**. Select QRV-Hub with ▲/▼ and press OK, then enter your username
-and password and select **Connect**. From now on the radio opens QRV-Hub by
-itself after every reboot. Press **Home** to come back to the launcher.
+The launcher opens QRV-Hub straight away: enter your username and password
+and select **Connect**. From now on the radio opens QRV-Hub by itself after
+every reboot.
+
+Press **Home** to come back to the launcher (it asks before closing QRV-Hub),
+which offers **QRV-Hub** and **Spender Network**: choose with ▲/▼ and OK.
 
 You can unplug the USB cable; it is only needed for installing.
 
