@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Selected list row: lighter surface with a 4 dp amber bar on the left. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item><color android:color="@color/amber" /></item>
+    <item android:left="4dp"><color android:color="@color/surface2" /></item>
+</layer-list>

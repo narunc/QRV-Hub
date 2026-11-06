@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- QRV-Hub palette: dark, high contrast for a 2-inch outdoor screen. -->
+<resources>
+    <color name="bg">#0B1218</color>
+    <color name="surface">#16212B</color>
+    <color name="surface2">#1E2C38</color>
+    <color name="line">#2C3E4C</color>
+    <color name="text">#ECF1F4</color>
+    <color name="sub">#90A4AE</color>
+    <color name="blue">#1E88E5</color>
+    <color name="blue_d">#1565C0</color>
+    <color name="amber">#FFB300</color>
+    <color name="green">#2E7D32</color>
+    <color name="green_d">#1B5E20</color>
+    <color name="green_l">#69F0AE</color>
+    <color name="green_tag_text">#C8E6C9</color>
+    <color name="red">#C62828</color>
+    <color name="chip">#263642</color>
+    <color name="dim">#99000000</color>
+</resources>

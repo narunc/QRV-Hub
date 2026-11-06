@@ -1,0 +1,27 @@
+apply plugin: 'com.android.application'
+
+android {
+    namespace 'me.narun.apps.qrvhub.launcher'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "me.narun.apps.qrvhub.launcher"
+        minSdk 21
+        targetSdk 22
+        versionCode 1
+        versionName "1.0.0"
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    buildTypes {
+        release { minifyEnabled false }
+    }
+    lint {
+        abortOnError = false
+        // Targets the radio's Android 5.1 (API 22) on purpose: permissions are granted
+        // at install time there. Not meant for Google Play.
+        disable 'ExpiredTargetSdkVersion'
+    }
+}

@@ -1,0 +1,4 @@
+// QRV-Hub for the Spender TC-7G: the push-to-talk client, its launcher and the
+// display-size helper, plus the Humla Mumble library they build on.
+rootProject.name = 'qrv-hub'
+include ':humla', ':qrvhub', ':launcher', ':display'

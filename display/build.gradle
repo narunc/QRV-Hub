@@ -1,0 +1,36 @@
+apply plugin: 'com.android.application'
+
+android {
+    namespace 'me.narun.apps.qrvhub.display'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "me.narun.apps.qrvhub.display"
+        // Very low minSdk forces heavy D8 desugaring, a common trigger for
+        // opaque dexing failures. Lower this only if
+        // `adb shell getprop ro.build.version.sdk` reports below 19.
+        minSdk 19
+        targetSdk 22
+        versionCode 1
+        versionName "1.0.0"
+    }
+
+    compileOptions {
+        // Java 8 source/target is deprecated on JDK 21 and emits a warning.
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    lint {
+        abortOnError = false
+        // Targets the radio's Android 5.1 (API 22) on purpose: permissions are granted
+        // at install time there. Not meant for Google Play.
+        disable 'ExpiredTargetSdkVersion'
+    }
+}

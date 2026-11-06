@@ -1,0 +1,41 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.13.2'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+// Release signing. The key is never stored in this repository: supply it at build
+// time, e.g.
+//   QRVHUB_KEYSTORE=/path/release.jks QRVHUB_KEYSTORE_PASSWORD=... ./gradlew assembleRelease
+// (key alias "qrvhub" unless QRVHUB_KEY_ALIAS says otherwise; the key password is the
+// keystore password unless QRVHUB_KEY_PASSWORD is set). Without them, release APKs
+// are left unsigned and debug builds use the usual debug key.
+subprojects {
+    plugins.withId('com.android.application') {
+        def ks = System.getenv('QRVHUB_KEYSTORE')
+        if (ks) {
+            android {
+                signingConfigs {
+                    release {
+                        storeFile file(ks)
+                        storePassword System.getenv('QRVHUB_KEYSTORE_PASSWORD')
+                        keyAlias System.getenv('QRVHUB_KEY_ALIAS') ?: 'qrvhub'
+                        keyPassword System.getenv('QRVHUB_KEY_PASSWORD') ?: System.getenv('QRVHUB_KEYSTORE_PASSWORD')
+                    }
+                }
+                buildTypes.release.signingConfig signingConfigs.release
+            }
+        }
+    }
+}

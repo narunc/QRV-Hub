@@ -1,0 +1,55 @@
+// QRV-Hub: single-server push-to-talk client for the Spender TC-7G, built on Humla.
+apply plugin: 'com.android.application'
+
+// Server the app is built for (see gradle.properties). The certificate file is
+// the server's TLS certificate (PEM); it is the only one the app trusts at first.
+def serverHost = project.findProperty('qrvhub.host') ?: 'e2hub.vra.or.th'
+def serverPort = (project.findProperty('qrvhub.port') ?: '64738') as int
+def serverCert = rootProject.file(project.findProperty('qrvhub.serverCert') ?: 'qrvhub/server/server.pem')
+
+def serverRes = layout.buildDirectory.dir('generated/serverRes')
+def copyServerCert = tasks.register('copyServerCert', Copy) {
+    from(serverCert) { rename { 'server_cert.pem' } }
+    into serverRes.map { it.dir('raw') }
+}
+
+android {
+    namespace = 'me.narun.apps.qrvhub'
+    compileSdk = 36
+
+    defaultConfig {
+        applicationId "me.narun.apps.qrvhub"
+        minSdkVersion 21
+        // The device runs API 22; staying at 22 keeps install-time permissions.
+        targetSdk 22
+        versionCode 1
+        versionName "1.0.0"
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    defaultConfig {
+        buildConfigField 'String', 'SERVER_HOST', "\"${serverHost}\""
+        buildConfigField 'int', 'SERVER_PORT', "${serverPort}"
+    }
+
+    sourceSets.main.res.srcDir serverRes
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+    }
+
+    lint {
+        abortOnError = false
+        checkReleaseBuilds = false
+    }
+}
+
+dependencies {
+    implementation project(":humla")
+}
+
+tasks.named('preBuild') { dependsOn copyServerCert }

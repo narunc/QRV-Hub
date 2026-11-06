@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">QRV-Hub</string>
+    <string name="label_pass">Password</string>
+    <string name="err_username">Enter a username</string>
+    <string name="err_wrong_user_pw">Wrong username or password</string>
+    <string name="err_wrong_server_pw">Wrong password</string>
+    <string name="err_invalid_username">Username not accepted</string>
+
+    <string name="st_starting">Starting…</string>
+    <string name="st_connecting">Connecting…</string>
+    <string name="st_disconnected">Not connected</string>
+    <string name="menu_unlisten_all">Stop listening to all</string>
+    <string name="menu_trust">Trust new certificate</string>
+    <string name="menu_retry">Retry now</string>
+    <string name="menu_about">About</string>
+    <string name="menu_logout">Log out</string>
+    <string name="about_not_connected">Not connected</string>
+    <string name="yes">yes</string>
+    <string name="no">no</string>
+
+    <string name="fb_not_connected">Not connected</string>
+    <string name="fb_headset">Headset</string>
+    <string name="fb_speaker">Speaker</string>
+    <string name="fb_listen_limit">Listen limit reached</string>
+
+    <string name="notif_connecting">Connecting…</string>
+    <string name="notif_connected">Connected to %1$s</string>
+    <string name="notif_reconnecting">Connection lost, retrying</string>
+    <string name="notif_disconnected">Not connected</string>
+    <string name="notif_cert">Server certificate changed</string>
+
+    <!-- Login -->
+    <string name="label_user">Callsign / username</string>
+    <string name="btn_connect">Connect</string>
+    <string name="login_hint">OK type  ·  DOWN next</string>
+
+    <!-- Status: title and detail are shown on separate lines -->
+    <string name="st_preparing">Preparing…</string>
+    <string name="st_preparing_detail">First start only</string>
+    <string name="st_lost">Connection lost</string>
+    <string name="st_lost_detail">Retrying…</string>
+    <string name="st_in_use">Username in use</string>
+    <string name="st_in_use_detail">Retrying in 10 s</string>
+    <string name="st_rejected">Rejected</string>
+    <string name="st_cert_changed">Server certificate changed</string>
+    <string name="hint_options">Options</string>
+    <string name="hint_retry">Retry · Log out</string>
+    <string name="hint_trust">Trust certificate</string>
+
+    <!-- Connected screen -->
+    <string name="you">You</string>
+    <string name="transmitting">Transmitting</string>
+    <string name="channels_title">Channels</string>
+    <plurals name="members_count"><item quantity="one">%d member</item><item quantity="other">%d members</item></plurals>
+    <plurals name="channels_count"><item quantity="one">%d channel</item><item quantity="other">%d channels</item></plurals>
+    <string name="listening_to">listening to %1$d</string>
+    <string name="you_are_in">you are in %1$s</string>
+    <string name="test_prefix">TEST</string>
+
+    <!-- Menu -->
+    <string name="menu_listen">Listen to channel</string>
+    <string name="menu_unlisten">Stop listening</string>
+    <string name="menu_title_app">QRV-Hub</string>
+    <string name="menu_screen_ptt_on">Screen on while talking: On</string>
+    <string name="menu_screen_ptt_off">Screen on while talking: Off</string>
+    <string name="fb_screen_ptt">Screen on while talking</string>
+    <string name="menu_screen_rx_on">Screen on while receiving: On</string>
+    <string name="menu_screen_rx_off">Screen on while receiving: Off</string>
+    <string name="fb_screen_rx">Screen on while receiving</string>
+    <string name="fb_muted">Muted</string>
+    <string name="fb_unmuted">Unmuted</string>
+    <string name="fb_mute_detail">Double-press power to toggle</string>
+    <string name="fb_volume_level">Volume %1$d</string>
+    <string name="fb_volume_saved">Volume %1$d saved</string>
+    <string name="hint_lock">Lock</string>
+    <string name="hint_unlock">Unlock</string>
+    <string name="fb_ptt_locked">PTT locked</string>
+    <string name="fb_ptt_locked_detail">PTT will not transmit</string>
+    <string name="fb_ptt_unlocked">PTT unlocked</string>
+    <string name="fb_ptt_locked_press">◀ or ▶ to unlock</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
+
+    <!-- About -->
+    <string name="about_title">QRV-Hub %1$s</string>
+    <string name="about_detail">%1$s\nUser %2$s\n%3$s\nHeadset %4$s</string>
+    <string name="about_server">Murmur %1$s</string>
+
+    <!-- Feedback cards: title / detail -->
+    <string name="fb_fav_title">Favorite %1$d</string>
+    <string name="fb_fav_saved_title">Favorite %1$d saved</string>
+    <string name="fb_fav_unset_detail">Not set · hold to save</string>
+    <string name="fb_fav_missing_detail">%1$s not found</string>
+    <string name="fb_fav_already_detail">Already in %1$s</string>
+    <string name="fb_headset_detail">Audio on headset</string>
+    <string name="fb_speaker_detail">Audio on speaker</string>
+    <string name="fb_listen_on">Listening</string>
+    <string name="fb_listen_off">Stopped listening</string>
+    <string name="fb_listen_failed">Could not listen</string>
+    <string name="fb_listen_all_detail">All channels</string>
+    <string name="fb_join">Joined</string>
+    <string name="fb_denied">Not allowed</string>
+    <string name="fb_error">Error</string>
+</resources>

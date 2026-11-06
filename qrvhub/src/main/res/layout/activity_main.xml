@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- QRV-Hub main screen. Logical 320x266 dp on a 2-inch 160x128 px panel
+     (1 dp is about half a real pixel): primary text 20 sp and up. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg">
+
+    <!-- ===== Login ===== -->
+    <LinearLayout
+        android:id="@+id/login_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="4dp"
+        android:visibility="gone">
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:gravity="center_vertical">
+            <TextView android:layout_width="36dp" android:layout_height="28dp" android:gravity="center"
+                android:background="@drawable/logo_badge" android:text="QRV" android:textColor="#FFFFFF"
+                android:textSize="12sp" android:textStyle="bold" />
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/app_name" android:textColor="@color/text" android:textSize="20sp"
+                    android:textStyle="bold" android:includeFontPadding="false" />
+                <TextView android:id="@+id/login_host" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textColor="@color/sub" android:textSize="14sp" android:singleLine="true" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="6dp" android:text="@string/label_user" android:textColor="@color/sub" android:textSize="14sp" />
+        <EditText android:id="@+id/user" android:layout_width="match_parent" android:layout_height="38dp"
+            android:layout_marginTop="2dp" android:background="@drawable/field_bg" android:paddingLeft="10dp" android:paddingRight="10dp"
+            android:textColor="@color/text" android:textSize="20sp" android:singleLine="true"
+            android:inputType="text|textNoSuggestions" android:imeOptions="actionNext|flagNoExtractUi"
+            android:nextFocusDown="@+id/pass" />
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="4dp" android:text="@string/label_pass" android:textColor="@color/sub" android:textSize="14sp" />
+        <EditText android:id="@+id/pass" android:layout_width="match_parent" android:layout_height="38dp"
+            android:layout_marginTop="2dp" android:background="@drawable/field_bg" android:paddingLeft="10dp" android:paddingRight="10dp"
+            android:textColor="@color/text" android:textSize="20sp" android:singleLine="true"
+            android:inputType="textPassword" android:imeOptions="actionDone|flagNoExtractUi"
+            android:nextFocusUp="@id/user" android:nextFocusDown="@+id/connect" />
+
+        <Button android:id="@+id/connect" android:layout_width="match_parent" android:layout_height="40dp"
+            android:layout_marginTop="8dp" android:background="@drawable/button_bg" android:text="@string/btn_connect"
+            android:textAllCaps="false" android:textColor="#FFFFFF" android:textSize="20sp" android:textStyle="bold"
+            android:nextFocusUp="@id/pass" />
+
+        <TextView android:id="@+id/login_error" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="4dp" android:gravity="center" android:textColor="#FF6E6E" android:textSize="15sp"
+            android:textStyle="bold" android:maxLines="1" android:ellipsize="end" android:visibility="gone" />
+        <TextView android:id="@+id/login_hint" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="4dp" android:gravity="center" android:text="@string/login_hint"
+            android:textColor="@color/sub" android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- ===== Status (connecting, lost, errors) ===== -->
+    <LinearLayout
+        android:id="@+id/status_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:visibility="gone">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
+            android:orientation="vertical" android:gravity="center" android:padding="8dp">
+            <ImageView android:id="@+id/status_spinner" android:layout_width="36dp" android:layout_height="36dp"
+                android:src="@drawable/ic_refresh" android:tint="@color/blue" android:contentDescription="@null" />
+            <ImageView android:id="@+id/status_icon" android:layout_width="36dp" android:layout_height="36dp"
+                android:src="@drawable/ic_warning" android:tint="@color/amber" android:contentDescription="@null"
+                android:visibility="gone" />
+            <TextView android:id="@+id/status_title" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" android:gravity="center" android:textColor="@color/text"
+                android:textSize="23sp" android:textStyle="bold" android:maxLines="2" />
+            <TextView android:id="@+id/status_detail" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="4dp" android:gravity="center" android:textColor="@color/sub"
+                android:textSize="16sp" android:maxLines="3" />
+        </LinearLayout>
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="26dp"
+            android:orientation="horizontal" android:gravity="center_vertical" android:background="@color/surface"
+            android:paddingLeft="6dp" android:paddingRight="6dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:background="@drawable/keycap" android:paddingLeft="5dp" android:paddingRight="5dp"
+                android:text="MENU" android:textColor="@color/text" android:textSize="12sp" android:textStyle="bold" />
+            <TextView android:id="@+id/status_hint" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp" android:text="@string/hint_options" android:textColor="@color/sub"
+                android:textSize="14sp" android:singleLine="true" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- ===== Connected: members / channels ===== -->
+    <LinearLayout
+        android:id="@+id/main_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:gravity="center_vertical" android:background="@color/surface"
+            android:paddingLeft="10dp" android:paddingRight="8dp" android:paddingTop="2dp" android:paddingBottom="3dp">
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView android:id="@+id/header_title" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:textColor="@color/text" android:textSize="21sp" android:textStyle="bold"
+                    android:singleLine="true" android:ellipsize="end" android:includeFontPadding="false" />
+                <TextView android:id="@+id/header_sub" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:textColor="@color/sub" android:textSize="15sp" android:singleLine="true" android:ellipsize="end" />
+            </LinearLayout>
+            <ImageView android:id="@+id/header_mute" android:layout_width="18dp" android:layout_height="18dp"
+                android:layout_marginLeft="6dp" android:src="@drawable/ic_speaker_off" android:tint="@color/amber"
+                android:contentDescription="@null" android:visibility="gone" />
+            <ImageView android:id="@+id/header_lock" android:layout_width="18dp" android:layout_height="18dp"
+                android:layout_marginLeft="6dp" android:src="@drawable/ic_lock" android:tint="@color/amber"
+                android:contentDescription="@null" android:visibility="gone" />
+            <ImageView android:id="@+id/header_headset" android:layout_width="18dp" android:layout_height="18dp"
+                android:layout_marginLeft="6dp" android:src="@drawable/ic_headset" android:tint="@color/sub"
+                android:contentDescription="@null" android:visibility="gone" />
+            <ImageView android:id="@+id/header_listen" android:layout_width="18dp" android:layout_height="18dp"
+                android:layout_marginLeft="6dp" android:src="@drawable/ic_speaker" android:tint="@color/blue"
+                android:contentDescription="@null" android:visibility="gone" />
+        </LinearLayout>
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
+
+        <ListView android:id="@+id/list" android:layout_width="match_parent" android:layout_height="0dp"
+            android:layout_weight="1" android:listSelector="@drawable/sel_row" android:divider="@color/line"
+            android:dividerHeight="1dp" android:cacheColorHint="@android:color/transparent" />
+
+        <LinearLayout android:id="@+id/tx_bar" android:layout_width="match_parent" android:layout_height="42dp"
+            android:orientation="horizontal" android:gravity="center_vertical" android:background="@color/red"
+            android:paddingLeft="8dp" android:paddingRight="8dp" android:visibility="gone">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_mic"
+                android:tint="#FFFFFF" android:contentDescription="@null" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="8dp"
+                android:text="@string/transmitting" android:textColor="#FFFFFF" android:textSize="23sp" android:textStyle="bold" />
+        </LinearLayout>
+
+        <include layout="@layout/talker_line" android:id="@+id/talker1" />
+        <include layout="@layout/talker_line" android:id="@+id/talker2" />
+        <include layout="@layout/talker_line" android:id="@+id/talker3" />
+
+        <LinearLayout android:id="@+id/hint_members" android:layout_width="match_parent" android:layout_height="26dp"
+            android:orientation="horizontal" android:gravity="center_vertical" android:background="@color/surface"
+            android:paddingLeft="4dp" android:paddingRight="2dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:background="@drawable/keycap" android:paddingLeft="5dp" android:paddingRight="5dp"
+                android:text="◀▶" android:textColor="@color/text" android:textSize="12sp" android:textStyle="bold" />
+            <TextView android:id="@+id/hint_lock" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp" android:layout_marginRight="5dp"
+                android:text="@string/hint_lock" android:textColor="@color/sub" android:textSize="14sp" android:singleLine="true" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:background="@drawable/keycap" android:paddingLeft="5dp" android:paddingRight="5dp"
+                android:text="BACK" android:textColor="@color/text" android:textSize="12sp" android:textStyle="bold" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp" android:layout_marginRight="5dp"
+                android:text="Channels" android:textColor="@color/sub" android:textSize="14sp" android:singleLine="true" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:background="@drawable/keycap" android:paddingLeft="5dp" android:paddingRight="5dp"
+                android:text="MENU" android:textColor="@color/text" android:textSize="12sp" android:textStyle="bold" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp" android:layout_marginRight="0dp"
+                android:text="Options" android:textColor="@color/sub" android:textSize="14sp" android:singleLine="true" />
+        </LinearLayout>
+        <LinearLayout android:id="@+id/hint_channels" android:layout_width="match_parent" android:layout_height="26dp"
+            android:orientation="horizontal" android:gravity="center_vertical" android:background="@color/surface"
+            android:paddingLeft="6dp" android:paddingRight="6dp" android:visibility="gone">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:background="@drawable/keycap" android:paddingLeft="5dp" android:paddingRight="5dp"
+                android:text="OK" android:textColor="@color/text" android:textSize="12sp" android:textStyle="bold" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp" android:layout_marginRight="10dp"
+                android:text="Join" android:textColor="@color/sub" android:textSize="14sp" android:singleLine="true" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:background="@drawable/keycap" android:paddingLeft="5dp" android:paddingRight="5dp"
+                android:text="MENU" android:textColor="@color/text" android:textSize="12sp" android:textStyle="bold" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp" android:layout_marginRight="10dp"
+                android:text="Listen" android:textColor="@color/sub" android:textSize="14sp" android:singleLine="true" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:background="@drawable/keycap" android:paddingLeft="5dp" android:paddingRight="5dp"
+                android:text="BACK" android:textColor="@color/text" android:textSize="12sp" android:textStyle="bold" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp" android:layout_marginRight="0dp"
+                android:text="Members" android:textColor="@color/sub" android:textSize="14sp" android:singleLine="true" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- ===== MENU card ===== -->
+    <FrameLayout android:id="@+id/menu_overlay" android:layout_width="match_parent" android:layout_height="match_parent"
+        android:background="@color/dim" android:visibility="gone">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_gravity="bottom" android:layout_margin="4dp" android:orientation="vertical"
+            android:background="@drawable/card" android:paddingTop="4dp" android:paddingBottom="4dp">
+            <TextView android:id="@+id/menu_title" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:paddingLeft="12dp" android:paddingRight="12dp" android:paddingBottom="2dp"
+                android:textColor="@color/sub" android:textSize="15sp" android:textStyle="bold"
+                android:singleLine="true" android:ellipsize="end" />
+            <ListView android:id="@+id/menu_list" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:listSelector="@drawable/sel_menu" android:divider="@android:color/transparent"
+                android:dividerHeight="0dp" android:cacheColorHint="@android:color/transparent" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- ===== Feedback / About card ===== -->
+    <FrameLayout android:id="@+id/toast_overlay" android:layout_width="match_parent" android:layout_height="match_parent"
+        android:background="@color/dim" android:visibility="gone">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_gravity="center" android:layout_marginLeft="16dp" android:layout_marginRight="16dp"
+            android:orientation="vertical" android:gravity="center_horizontal" android:background="@drawable/card"
+            android:paddingLeft="10dp" android:paddingRight="10dp" android:paddingTop="10dp" android:paddingBottom="10dp">
+            <ImageView android:id="@+id/toast_icon" android:layout_width="30dp" android:layout_height="30dp"
+                android:contentDescription="@null" />
+            <TextView android:id="@+id/toast_title" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="4dp" android:gravity="center" android:textColor="@color/text"
+                android:textSize="22sp" android:textStyle="bold" android:maxLines="2" android:ellipsize="end" />
+            <TextView android:id="@+id/toast_detail" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="2dp" android:gravity="center" android:textColor="@color/sub"
+                android:textSize="18sp" android:maxLines="8" android:ellipsize="end" />
+        </LinearLayout>
+    </FrameLayout>
+</FrameLayout>

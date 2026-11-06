@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- Lint will flag this as a protected permission; that is expected.
+         It is granted from adb, not at install time. -->
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <!-- Granted over adb (pm grant): lets QRV-Hub Display read SurfaceFlinger to see whether
+         the panel is really scaled. -->
+    <uses-permission android:name="android.permission.DUMP" />
+
+    <!-- Panel is far below the "small" bucket; declare everything so the
+         installer never filters this package out on screen size. -->
+    <supports-screens
+        android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:xlargeScreens="true"
+        android:anyDensity="true" />
+
+    <application
+        android:label="QRV-Hub Display"
+        android:allowBackup="false">
+
+        <activity android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- exported=false is correct for production: an exported service
+             that changes display geometry is callable by any app on the
+             device. It also means `adb shell am startservice` will fail
+             with "Requires permission not exported from uid ...", which is
+             expected, not a bug. Test via MainActivity instead. -->
+        <service android:name=".DisplayService"
+            android:exported="false" />
+
+        <receiver android:name=".BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="999">
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+</manifest>
