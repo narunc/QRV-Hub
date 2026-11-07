@@ -45,7 +45,7 @@ Mumble library they build on:
   [Android SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools)
   (unzip it; on Windows run the commands below in that folder, typing `adb` as `adb.exe` if needed).
 * The three APKs from the [latest release](https://github.com/narunc/QRV-Hub/releases/latest):
-  `QRV-Hub-1.0.1.apk`, `QRV-Hub-Launcher-1.0.1.apk`, `QRV-Hub-Display-1.0.1.apk`.
+  `QRV-Hub-1.0.2.apk`, `QRV-Hub-Launcher-1.0.2.apk`, `QRV-Hub-Display-1.0.2.apk`.
   Put them in the folder where you run the commands.
 
 ### 1. Connect the radio
@@ -63,7 +63,7 @@ add `-s <serial>` after `adb` in every command below.)
 ### 2. Install QRV-Hub Display (screen size)
 
 ```sh
-adb install QRV-Hub-Display-1.0.1.apk
+adb install QRV-Hub-Display-1.0.2.apk
 adb shell wm size 240x200
 adb shell pm grant me.narun.apps.qrvhub.display android.permission.WRITE_SECURE_SETTINGS
 adb shell pm grant me.narun.apps.qrvhub.display android.permission.DUMP
@@ -77,13 +77,13 @@ Android will not run it at boot.
 ### 3. Install QRV-Hub
 
 ```sh
-adb install QRV-Hub-1.0.1.apk
+adb install QRV-Hub-1.0.2.apk
 ```
 
 ### 4. Install QRV-Hub Launcher (home screen)
 
 ```sh
-adb install QRV-Hub-Launcher-1.0.1.apk
+adb install QRV-Hub-Launcher-1.0.2.apk
 adb shell dpm set-device-owner me.narun.apps.qrvhub.launcher/.AdminReceiver
 adb shell am start -n me.narun.apps.qrvhub.launcher/.HomeActivity
 ```

@@ -42,7 +42,7 @@ QRV-Hub คือแอปวิทยุสื่อสารแบบกดค
   [Android SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools) ของ Google
   (แตกไฟล์ zip แล้วพิมพ์คำสั่งด้านล่างในโฟลเดอร์นั้น บน Windows อาจต้องพิมพ์ `adb.exe` แทน `adb`)
 * ไฟล์ APK ทั้ง 3 ไฟล์จาก [release ล่าสุด](https://github.com/narunc/QRV-Hub/releases/latest):
-  `QRV-Hub-1.0.1.apk`, `QRV-Hub-Launcher-1.0.1.apk`, `QRV-Hub-Display-1.0.1.apk`
+  `QRV-Hub-1.0.2.apk`, `QRV-Hub-Launcher-1.0.2.apk`, `QRV-Hub-Display-1.0.2.apk`
   วางไว้ในโฟลเดอร์เดียวกับที่พิมพ์คำสั่ง
 
 ### 1. เชื่อมต่อวิทยุกับคอมพิวเตอร์
@@ -59,7 +59,7 @@ adb devices
 ### 2. ติดตั้ง QRV-Hub Display (ขนาดหน้าจอ)
 
 ```sh
-adb install QRV-Hub-Display-1.0.1.apk
+adb install QRV-Hub-Display-1.0.2.apk
 adb shell wm size 240x200
 adb shell pm grant me.narun.apps.qrvhub.display android.permission.WRITE_SECURE_SETTINGS
 adb shell pm grant me.narun.apps.qrvhub.display android.permission.DUMP
@@ -72,13 +72,13 @@ adb shell am start -n me.narun.apps.qrvhub.display/.MainActivity
 ### 3. ติดตั้ง QRV-Hub
 
 ```sh
-adb install QRV-Hub-1.0.1.apk
+adb install QRV-Hub-1.0.2.apk
 ```
 
 ### 4. ติดตั้ง QRV-Hub Launcher (หน้าโฮม)
 
 ```sh
-adb install QRV-Hub-Launcher-1.0.1.apk
+adb install QRV-Hub-Launcher-1.0.2.apk
 adb shell dpm set-device-owner me.narun.apps.qrvhub.launcher/.AdminReceiver
 adb shell am start -n me.narun.apps.qrvhub.launcher/.HomeActivity
 ```
