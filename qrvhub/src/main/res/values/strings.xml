@@ -86,6 +86,7 @@
     <string name="about_title">QRV-Hub %1$s</string>
     <string name="about_detail">%1$s\nUser %2$s\n%3$s\nHeadset %4$s</string>
     <string name="about_server">Murmur %1$s</string>
+    <string name="about_credit">Created by E26CYA</string>
 
     <!-- Feedback cards: title / detail -->
     <string name="fb_fav_title">Favorite %1$d</string>

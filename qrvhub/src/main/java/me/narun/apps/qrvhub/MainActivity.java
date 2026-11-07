@@ -754,7 +754,8 @@ public class MainActivity extends Activity implements QrvHubService.UiListener {
         }
         showModal(getString(R.string.about_title, BuildConfig.VERSION_NAME),
                 getString(R.string.about_detail, hostLine(), Prefs.username(this), server,
-                        getString(mService != null && mService.isHeadsetPlugged() ? R.string.yes : R.string.no)));
+                        getString(mService != null && mService.isHeadsetPlugged() ? R.string.yes : R.string.no))
+                        + "\n" + getString(R.string.about_credit));
     }
 
     // ---- feedback card --------------------------------------------------------
