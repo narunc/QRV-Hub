@@ -26,9 +26,9 @@ Mumble library they build on:
 * [Installing on the radio](#installing-on-the-radio)
   * [Updating](#updating)
   * [Removing everything](#removing-everything)
+* [Screenshots](#screenshots)
 * [Why QRV-Hub exists](#why-qrv-hub-exists)
 * [Key features](#key-features)
-  * [Screenshots](#screenshots)
 * [Using it](#using-it)
   * [Monitoring several channels](#monitoring-several-channels)
 * [Troubleshooting](#troubleshooting)
@@ -132,6 +132,50 @@ Use the same steps with your own files
 (`qrvhub/build/outputs/apk/…`, `launcher/…`, `display/…`), or run
 `SERIAL=<serial> display/install-display.sh` from the repository for step 2.
 
+## Screenshots
+
+Taken on the radio itself (160×128, shown at 2×) in real use on the E2Hub server.
+
+<p>
+<img src="docs/screenshots/login.png" width="49%" alt="Login">
+<img src="docs/screenshots/members.png" width="49%" alt="Members">
+</p>
+
+* Left: **Login**: just username and password; the server is built in
+* Right: **Members** of your channel
+
+<p>
+<img src="docs/screenshots/speaking.png" width="49%" alt="Monitoring">
+<img src="docs/screenshots/channels.png" width="49%" alt="Channels">
+</p>
+
+* Left: **Monitoring**: HS1AB-99 talks in your channel, E24CY-1 in the monitored channel E24CY (with its tag)
+* Right: **Channels**: monitored ones have a blue speaker
+
+<p>
+<img src="docs/screenshots/transmitting.png" width="49%" alt="Transmitting">
+<img src="docs/screenshots/menu.png" width="49%" alt="Menu">
+</p>
+
+* Left: **Transmitting** while PTT is held
+* Right: **Menu** for a monitored channel (MENU)
+
+<p>
+<img src="docs/screenshots/volume.png" width="49%" alt="Volume">
+<img src="docs/screenshots/locked.png" width="49%" alt="PTT lock">
+</p>
+
+* Left: **Volume**: 30 steps on the knob
+* Right: **PTT lock** on ◀/▶
+
+<p>
+<img src="docs/screenshots/muted.png" width="49%" alt="Mute">
+<img src="docs/screenshots/launcher.png" width="49%" alt="Launcher">
+</p>
+
+* Left: **Mute**: double-press Power
+* Right: **QRV-Hub Launcher**: QRV-Hub or Spender Network
+
 ## Why QRV-Hub exists
 
 The Spender TC-7G is a good push-to-talk radio, but out of the box it can only
@@ -216,50 +260,6 @@ QRV-Hub is the set of fixes, measured and tested on the radio.
   someone talks and you are muted, slow yellow flash when muted and idle.
 * Optional **screen on while talking / while receiving** (off 5 s after).
 * Battery: no continuous microphone, normal Wi-Fi power saving, 15 s keep-alive.
-
-### Screenshots
-
-Taken on the radio itself (160×128, shown at 2×) in real use on the E2Hub server.
-
-<p>
-<img src="docs/screenshots/login.png" width="49%" alt="Login">
-<img src="docs/screenshots/members.png" width="49%" alt="Members">
-</p>
-
-* Left: **Login**: just username and password; the server is built in
-* Right: **Members** of your channel
-
-<p>
-<img src="docs/screenshots/speaking.png" width="49%" alt="Monitoring">
-<img src="docs/screenshots/channels.png" width="49%" alt="Channels">
-</p>
-
-* Left: **Monitoring**: HS1AB-99 talks in your channel, E24CY-1 in the monitored channel E24CY (with its tag)
-* Right: **Channels**: monitored ones have a blue speaker
-
-<p>
-<img src="docs/screenshots/transmitting.png" width="49%" alt="Transmitting">
-<img src="docs/screenshots/menu.png" width="49%" alt="Menu">
-</p>
-
-* Left: **Transmitting** while PTT is held
-* Right: **Menu** for a monitored channel (MENU)
-
-<p>
-<img src="docs/screenshots/volume.png" width="49%" alt="Volume">
-<img src="docs/screenshots/locked.png" width="49%" alt="PTT lock">
-</p>
-
-* Left: **Volume**: 30 steps on the knob
-* Right: **PTT lock** on ◀/▶
-
-<p>
-<img src="docs/screenshots/muted.png" width="49%" alt="Mute">
-<img src="docs/screenshots/launcher.png" width="49%" alt="Launcher">
-</p>
-
-* Left: **Mute**: double-press Power
-* Right: **QRV-Hub Launcher**: QRV-Hub or Spender Network
 
 ## Using it
 
