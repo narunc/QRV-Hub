@@ -94,16 +94,17 @@ QRV-Hub คือชุดแก้ปัญหาเหล่านี้ ซ�
 
 ### ภาพหน้าจอ
 
-ภาพจากวิทยุจริง (จอ 160×128 ขยาย 2 เท่า) ถ่ายบนเซิร์ฟเวอร์ทดสอบด้วยชื่อสมมติ จึงมีคำว่า TEST ที่หัวจอ
+ภาพจากวิทยุจริง (จอ 160×128 ขยาย 2 เท่า) ใช้งานจริงบนเซิร์ฟเวอร์ E2Hub ยกเว้นภาพ "กำลังส่งเสียง"
+ที่ถ่ายบนเซิร์ฟเวอร์ทดสอบ (มีคำว่า TEST) เพื่อไม่ให้ส่งเสียงรบกวนผู้ใช้จริง
 
 |   |   |
 |---|---|
 | <img src="docs/screenshots/login.png" width="320" alt="**เข้าสู่ระบบ**: ใส่แค่ชื่อผู้ใช้และรหัสผ่าน เซิร์ฟเวอร์อยู่ในแอปแล้ว"> | <img src="docs/screenshots/members.png" width="320" alt="**รายชื่อสมาชิก** ในช่องที่เราอยู่"> |
 | **เข้าสู่ระบบ**: ใส่แค่ชื่อผู้ใช้และรหัสผ่าน เซิร์ฟเวอร์อยู่ในแอปแล้ว | **รายชื่อสมาชิก** ในช่องที่เราอยู่ |
-| <img src="docs/screenshots/speaking.png" width="320" alt="**มอนิเตอร์หลายช่อง**: Alpha-1 พูดในช่องเรา Delta-4 พูดจากช่อง North ที่ฟังอยู่"> | <img src="docs/screenshots/channels.png" width="320" alt="**รายชื่อช่อง**: ช่องที่ฟังอยู่มีรูปลำโพงสีน้ำเงิน"> |
-| **มอนิเตอร์หลายช่อง**: Alpha-1 พูดในช่องเรา Delta-4 พูดจากช่อง North ที่ฟังอยู่ | **รายชื่อช่อง**: ช่องที่ฟังอยู่มีรูปลำโพงสีน้ำเงิน |
-| <img src="docs/screenshots/transmitting.png" width="320" alt="**กำลังส่งเสียง** (กด PTT)"> | <img src="docs/screenshots/menu.png" width="320" alt="**เมนูตัวเลือก** (ปุ่ม MENU)"> |
-| **กำลังส่งเสียง** (กด PTT) | **เมนูตัวเลือก** (ปุ่ม MENU) |
+| <img src="docs/screenshots/speaking.png" width="320" alt="**มอนิเตอร์หลายช่อง**: HS1AB-99 พูดในช่องเรา E24CY-1 พูดจากช่อง E24CY ที่ฟังอยู่ (มีป้ายชื่อช่อง)"> | <img src="docs/screenshots/channels.png" width="320" alt="**รายชื่อช่อง**: ช่องที่ฟังอยู่มีรูปลำโพงสีน้ำเงิน"> |
+| **มอนิเตอร์หลายช่อง**: HS1AB-99 พูดในช่องเรา E24CY-1 พูดจากช่อง E24CY ที่ฟังอยู่ (มีป้ายชื่อช่อง) | **รายชื่อช่อง**: ช่องที่ฟังอยู่มีรูปลำโพงสีน้ำเงิน |
+| <img src="docs/screenshots/transmitting.png" width="320" alt="**กำลังส่งเสียง** (กด PTT)"> | <img src="docs/screenshots/menu.png" width="320" alt="**เมนู** ของช่องที่ฟังอยู่ (ปุ่ม MENU)"> |
+| **กำลังส่งเสียง** (กด PTT) | **เมนู** ของช่องที่ฟังอยู่ (ปุ่ม MENU) |
 | <img src="docs/screenshots/volume.png" width="320" alt="**ปรับเสียง** 30 ระดับ ด้วยปุ่มหมุน"> | <img src="docs/screenshots/locked.png" width="320" alt="**ล็อก PTT** ด้วยปุ่ม ◀/▶"> |
 | **ปรับเสียง** 30 ระดับ ด้วยปุ่มหมุน | **ล็อก PTT** ด้วยปุ่ม ◀/▶ |
 | <img src="docs/screenshots/muted.png" width="320" alt="**ปิดเสียง** ด้วยการกดปุ่ม Power 2 ครั้ง"> | <img src="docs/screenshots/launcher.png" width="320" alt="**QRV-Hub Launcher**: เลือก QRV-Hub หรือ Spender Network"> |
