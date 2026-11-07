@@ -21,6 +21,117 @@ Mumble library they build on:
 | `display/` | **QRV-Hub Display** | Keeps the display at 240×200 so text is readable, including after every reboot |
 | `humla/` | Humla | Mumble protocol library ([upstream](https://gitlab.com/quite/humla)), with small changes listed in [`humla/MODIFICATIONS.md`](humla/MODIFICATIONS.md) |
 
+## Contents
+
+* [Installing on the radio](#installing-on-the-radio)
+  * [Updating](#updating)
+  * [Removing everything](#removing-everything)
+* [Why QRV-Hub exists](#why-qrv-hub-exists)
+* [Key features](#key-features)
+  * [Screenshots](#screenshots)
+* [Using it](#using-it)
+  * [Monitoring several channels](#monitoring-several-channels)
+* [Troubleshooting](#troubleshooting)
+* [Building](#building)
+* [How it fits the radio](#how-it-fits-the-radio)
+* [Licence and credits](#licence-and-credits)
+
+## Installing on the radio
+
+### What you need
+
+* The Spender TC-7G and its USB cable (developer mode and USB debugging are on from the factory).
+* A computer (Windows, macOS or Linux) with **adb**, from Google's
+  [Android SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools)
+  (unzip it; on Windows run the commands below in that folder, typing `adb` as `adb.exe` if needed).
+* The three APKs from the [latest release](https://github.com/narunc/QRV-Hub/releases/latest):
+  `QRV-Hub-1.0.1.apk`, `QRV-Hub-Launcher-1.0.1.apk`, `QRV-Hub-Display-1.0.1.apk`.
+  Put them in the folder where you run the commands.
+
+### 1. Connect the radio
+
+Plug the radio into the computer and run:
+
+```sh
+adb devices
+```
+
+The radio must be listed as `device`; it trusts the computer by itself, with
+nothing to confirm on the radio. (If more than one device is connected,
+add `-s <serial>` after `adb` in every command below.)
+
+### 2. Install QRV-Hub Display (screen size)
+
+```sh
+adb install QRV-Hub-Display-1.0.1.apk
+adb shell wm size 240x200
+adb shell pm grant me.narun.apps.qrvhub.display android.permission.WRITE_SECURE_SETTINGS
+adb shell pm grant me.narun.apps.qrvhub.display android.permission.DUMP
+adb shell am start -n me.narun.apps.qrvhub.display/.MainActivity
+```
+
+The text on the radio becomes smaller and fits the screen. The two permissions
+let it keep that size after every reboot; starting it once is required, or
+Android will not run it at boot.
+
+### 3. Install QRV-Hub
+
+```sh
+adb install QRV-Hub-1.0.1.apk
+```
+
+### 4. Install QRV-Hub Launcher (home screen)
+
+```sh
+adb install QRV-Hub-Launcher-1.0.1.apk
+adb shell dpm set-device-owner me.narun.apps.qrvhub.launcher/.AdminReceiver
+adb shell am start -n me.narun.apps.qrvhub.launcher/.HomeActivity
+```
+
+The launcher becomes the home screen and the *device owner*, which is what
+lets it fully stop the radio app you are not using. Android accepts a device
+owner only while the radio has **no accounts** (for example no Google
+account); remove them first if `dpm` refuses.
+
+### 5. First use
+
+The launcher opens QRV-Hub straight away: enter your username and password
+and select **Connect**. From now on the radio opens QRV-Hub by itself after
+every reboot.
+
+Press **Home** to come back to the launcher (it asks before closing QRV-Hub),
+which offers **QRV-Hub** and **Spender Network**: choose with ▲/▼ and OK.
+
+You can unplug the USB cable; it is only needed for installing.
+
+### Updating
+
+Download the new APKs and install them over the old ones; your login and
+settings stay:
+
+```sh
+adb install -r QRV-Hub-<version>.apk
+```
+
+### Removing everything
+
+```sh
+adb shell am broadcast -a me.narun.apps.qrvhub.launcher.RELEASE
+adb uninstall me.narun.apps.qrvhub.launcher
+adb uninstall me.narun.apps.qrvhub
+adb uninstall me.narun.apps.qrvhub.display
+adb shell wm size reset
+```
+
+The first line gives the radio back its own home screen and makes Spender
+Network visible again; the last one restores the original screen size.
+
+### If you built the APKs yourself
+
+Use the same steps with your own files
+(`qrvhub/build/outputs/apk/…`, `launcher/…`, `display/…`), or run
+`SERIAL=<serial> display/install-display.sh` from the repository for step 2.
+
 ## Why QRV-Hub exists
 
 The Spender TC-7G is a good push-to-talk radio, but out of the box it can only
@@ -149,102 +260,6 @@ Taken on the radio itself (160×128, shown at 2×) in real use on the E2Hub serv
 
 * Left: **Mute**: double-press Power
 * Right: **QRV-Hub Launcher**: QRV-Hub or Spender Network
-
-## Installing on the radio
-
-### What you need
-
-* The Spender TC-7G and its USB cable (developer mode and USB debugging are on from the factory).
-* A computer (Windows, macOS or Linux) with **adb**, from Google's
-  [Android SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools)
-  (unzip it; on Windows run the commands below in that folder, typing `adb` as `adb.exe` if needed).
-* The three APKs from the [latest release](https://github.com/narunc/QRV-Hub/releases/latest):
-  `QRV-Hub-1.0.1.apk`, `QRV-Hub-Launcher-1.0.1.apk`, `QRV-Hub-Display-1.0.1.apk`.
-  Put them in the folder where you run the commands.
-
-### 1. Connect the radio
-
-Plug the radio into the computer and run:
-
-```sh
-adb devices
-```
-
-The radio must be listed as `device`; it trusts the computer by itself, with
-nothing to confirm on the radio. (If more than one device is connected,
-add `-s <serial>` after `adb` in every command below.)
-
-### 2. Install QRV-Hub Display (screen size)
-
-```sh
-adb install QRV-Hub-Display-1.0.1.apk
-adb shell wm size 240x200
-adb shell pm grant me.narun.apps.qrvhub.display android.permission.WRITE_SECURE_SETTINGS
-adb shell pm grant me.narun.apps.qrvhub.display android.permission.DUMP
-adb shell am start -n me.narun.apps.qrvhub.display/.MainActivity
-```
-
-The text on the radio becomes smaller and fits the screen. The two permissions
-let it keep that size after every reboot; starting it once is required, or
-Android will not run it at boot.
-
-### 3. Install QRV-Hub
-
-```sh
-adb install QRV-Hub-1.0.1.apk
-```
-
-### 4. Install QRV-Hub Launcher (home screen)
-
-```sh
-adb install QRV-Hub-Launcher-1.0.1.apk
-adb shell dpm set-device-owner me.narun.apps.qrvhub.launcher/.AdminReceiver
-adb shell am start -n me.narun.apps.qrvhub.launcher/.HomeActivity
-```
-
-The launcher becomes the home screen and the *device owner*, which is what
-lets it fully stop the radio app you are not using. Android accepts a device
-owner only while the radio has **no accounts** (for example no Google
-account); remove them first if `dpm` refuses.
-
-### 5. First use
-
-The launcher opens QRV-Hub straight away: enter your username and password
-and select **Connect**. From now on the radio opens QRV-Hub by itself after
-every reboot.
-
-Press **Home** to come back to the launcher (it asks before closing QRV-Hub),
-which offers **QRV-Hub** and **Spender Network**: choose with ▲/▼ and OK.
-
-You can unplug the USB cable; it is only needed for installing.
-
-### Updating
-
-Download the new APKs and install them over the old ones; your login and
-settings stay:
-
-```sh
-adb install -r QRV-Hub-<version>.apk
-```
-
-### Removing everything
-
-```sh
-adb shell am broadcast -a me.narun.apps.qrvhub.launcher.RELEASE
-adb uninstall me.narun.apps.qrvhub.launcher
-adb uninstall me.narun.apps.qrvhub
-adb uninstall me.narun.apps.qrvhub.display
-adb shell wm size reset
-```
-
-The first line gives the radio back its own home screen and makes Spender
-Network visible again; the last one restores the original screen size.
-
-### If you built the APKs yourself
-
-Use the same steps with your own files
-(`qrvhub/build/outputs/apk/…`, `launcher/…`, `display/…`), or run
-`SERIAL=<serial> display/install-display.sh` from the repository for step 2.
 
 ## Using it
 

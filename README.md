@@ -19,6 +19,104 @@ QRV-Hub คือแอปวิทยุสื่อสารแบบกดค
 | `display/` | **QRV-Hub Display** | ตั้งขนาดหน้าจอเป็น 240×200 ให้ตัวหนังสืออ่านได้ และคงไว้ทุกครั้งที่เปิดเครื่อง |
 | `humla/` | Humla | ไลบรารีโปรโตคอล Mumble (แก้ไขเล็กน้อย ดู [`humla/MODIFICATIONS.md`](humla/MODIFICATIONS.md)) |
 
+## สารบัญ
+
+* [วิธีติดตั้งลงวิทยุ](#วิธีติดตั้งลงวิทยุ)
+  * [อัปเดตเวอร์ชันใหม่](#อัปเดตเวอร์ชันใหม่)
+  * [ถอนการติดตั้งทั้งหมด](#ถอนการติดตั้งทั้งหมด)
+* [ทำไมต้องมี QRV-Hub](#ทำไมต้องมี-qrv-hub)
+* [ความสามารถหลัก](#ความสามารถหลัก)
+  * [ภาพหน้าจอ](#ภาพหน้าจอ)
+* [คู่มือการใช้งาน](#คู่มือการใช้งาน)
+  * [มอนิเตอร์หลายช่องพร้อมกัน](#มอนิเตอร์หลายช่องพร้อมกัน)
+* [ปัญหาที่อาจพบ](#ปัญหาที่อาจพบ)
+* [สร้างไฟล์ APK เอง (สำหรับนักพัฒนา)](#สร้างไฟล์-apk-เอง-สำหรับนักพัฒนา)
+* [สัญญาอนุญาตและผู้พัฒนา](#สัญญาอนุญาตและผู้พัฒนา)
+
+## วิธีติดตั้งลงวิทยุ
+
+### สิ่งที่ต้องมี
+
+* วิทยุ Spender TC-7G และสาย USB (วิทยุเปิดโหมดนักพัฒนาและ USB debugging ไว้แล้วตั้งแต่โรงงาน)
+* คอมพิวเตอร์ (Windows, macOS หรือ Linux) ที่มีโปรแกรม **adb** จากชุด
+  [Android SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools) ของ Google
+  (แตกไฟล์ zip แล้วพิมพ์คำสั่งด้านล่างในโฟลเดอร์นั้น บน Windows อาจต้องพิมพ์ `adb.exe` แทน `adb`)
+* ไฟล์ APK ทั้ง 3 ไฟล์จาก [release ล่าสุด](https://github.com/narunc/QRV-Hub/releases/latest):
+  `QRV-Hub-1.0.1.apk`, `QRV-Hub-Launcher-1.0.1.apk`, `QRV-Hub-Display-1.0.1.apk`
+  วางไว้ในโฟลเดอร์เดียวกับที่พิมพ์คำสั่ง
+
+### 1. เชื่อมต่อวิทยุกับคอมพิวเตอร์
+
+เสียบสาย USB แล้วพิมพ์:
+
+```sh
+adb devices
+```
+
+ต้องเห็นวิทยุแสดงเป็น `device` วิทยุยอมรับคอมพิวเตอร์ให้เอง ไม่ต้องกดอนุญาตที่เครื่อง
+(ถ้าต่ออุปกรณ์ไว้มากกว่า 1 เครื่อง ให้เติม `-s <หมายเลขเครื่อง>` ต่อจาก `adb` ในทุกคำสั่งด้านล่าง)
+
+### 2. ติดตั้ง QRV-Hub Display (ขนาดหน้าจอ)
+
+```sh
+adb install QRV-Hub-Display-1.0.1.apk
+adb shell wm size 240x200
+adb shell pm grant me.narun.apps.qrvhub.display android.permission.WRITE_SECURE_SETTINGS
+adb shell pm grant me.narun.apps.qrvhub.display android.permission.DUMP
+adb shell am start -n me.narun.apps.qrvhub.display/.MainActivity
+```
+
+ตัวหนังสือบนวิทยุจะเล็กลงพอดีจอ สิทธิ์ 2 ตัวนี้ทำให้แอปคงขนาดหน้าจอไว้ทุกครั้งที่เปิดเครื่อง
+และต้องสั่งเปิดแอปหนึ่งครั้ง ไม่เช่นนั้น Android จะไม่ให้แอปทำงานตอนเปิดเครื่อง
+
+### 3. ติดตั้ง QRV-Hub
+
+```sh
+adb install QRV-Hub-1.0.1.apk
+```
+
+### 4. ติดตั้ง QRV-Hub Launcher (หน้าโฮม)
+
+```sh
+adb install QRV-Hub-Launcher-1.0.1.apk
+adb shell dpm set-device-owner me.narun.apps.qrvhub.launcher/.AdminReceiver
+adb shell am start -n me.narun.apps.qrvhub.launcher/.HomeActivity
+```
+
+Launcher จะเป็นหน้าโฮมและเป็น *device owner* ซึ่งทำให้ปิดแอปวิทยุที่ไม่ได้ใช้ได้สนิท
+Android ยอมตั้ง device owner เฉพาะเมื่อในวิทยุ **ไม่มีบัญชีผู้ใช้** (เช่น Google account)
+ถ้าคำสั่ง `dpm` ไม่ยอม ให้ลบบัญชีออกก่อน
+
+### 5. เริ่มใช้งาน
+
+Launcher จะเปิด QRV-Hub ให้ทันที ใส่ชื่อผู้ใช้และรหัสผ่าน แล้วเลือก **Connect**
+ต่อไปทุกครั้งที่เปิดเครื่อง วิทยุจะเปิด QRV-Hub ให้เอง
+
+กด **Home** เพื่อกลับไปหน้า Launcher (จะถามก่อนปิด QRV-Hub) ซึ่งให้เลือก **QRV-Hub** หรือ
+**Spender Network** ด้วยปุ่ม ▲/▼ แล้วกด OK
+
+ถอดสาย USB ได้เลย สายใช้แค่ตอนติดตั้ง
+
+### อัปเดตเวอร์ชันใหม่
+
+ดาวน์โหลด APK ใหม่ แล้วติดตั้งทับของเดิม ข้อมูลเข้าสู่ระบบและการตั้งค่ายังอยู่ครบ:
+
+```sh
+adb install -r QRV-Hub-<เวอร์ชัน>.apk
+```
+
+### ถอนการติดตั้งทั้งหมด
+
+```sh
+adb shell am broadcast -a me.narun.apps.qrvhub.launcher.RELEASE
+adb uninstall me.narun.apps.qrvhub.launcher
+adb uninstall me.narun.apps.qrvhub
+adb uninstall me.narun.apps.qrvhub.display
+adb shell wm size reset
+```
+
+บรรทัดแรกคืนหน้าโฮมเดิมของวิทยุและแสดง Spender Network ตามเดิม บรรทัดสุดท้ายคืนขนาดหน้าจอเดิม
+
 ## ทำไมต้องมี QRV-Hub
 
 วิทยุ Spender TC-7G เป็นเครื่อง PTT ที่ดี แต่จากโรงงานใช้งานได้จริงแค่แอป PoC ของตัวเอง
@@ -135,90 +233,6 @@ QRV-Hub คือชุดแก้ปัญหาเหล่านี้ ซ�
 
 * ซ้าย: **ปิดเสียง** ด้วยการกดปุ่ม Power 2 ครั้ง
 * ขวา: **QRV-Hub Launcher** เลือก QRV-Hub หรือ Spender Network
-
-## วิธีติดตั้งลงวิทยุ
-
-### สิ่งที่ต้องมี
-
-* วิทยุ Spender TC-7G และสาย USB (วิทยุเปิดโหมดนักพัฒนาและ USB debugging ไว้แล้วตั้งแต่โรงงาน)
-* คอมพิวเตอร์ (Windows, macOS หรือ Linux) ที่มีโปรแกรม **adb** จากชุด
-  [Android SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools) ของ Google
-  (แตกไฟล์ zip แล้วพิมพ์คำสั่งด้านล่างในโฟลเดอร์นั้น บน Windows อาจต้องพิมพ์ `adb.exe` แทน `adb`)
-* ไฟล์ APK ทั้ง 3 ไฟล์จาก [release ล่าสุด](https://github.com/narunc/QRV-Hub/releases/latest):
-  `QRV-Hub-1.0.1.apk`, `QRV-Hub-Launcher-1.0.1.apk`, `QRV-Hub-Display-1.0.1.apk`
-  วางไว้ในโฟลเดอร์เดียวกับที่พิมพ์คำสั่ง
-
-### 1. เชื่อมต่อวิทยุกับคอมพิวเตอร์
-
-เสียบสาย USB แล้วพิมพ์:
-
-```sh
-adb devices
-```
-
-ต้องเห็นวิทยุแสดงเป็น `device` วิทยุยอมรับคอมพิวเตอร์ให้เอง ไม่ต้องกดอนุญาตที่เครื่อง
-(ถ้าต่ออุปกรณ์ไว้มากกว่า 1 เครื่อง ให้เติม `-s <หมายเลขเครื่อง>` ต่อจาก `adb` ในทุกคำสั่งด้านล่าง)
-
-### 2. ติดตั้ง QRV-Hub Display (ขนาดหน้าจอ)
-
-```sh
-adb install QRV-Hub-Display-1.0.1.apk
-adb shell wm size 240x200
-adb shell pm grant me.narun.apps.qrvhub.display android.permission.WRITE_SECURE_SETTINGS
-adb shell pm grant me.narun.apps.qrvhub.display android.permission.DUMP
-adb shell am start -n me.narun.apps.qrvhub.display/.MainActivity
-```
-
-ตัวหนังสือบนวิทยุจะเล็กลงพอดีจอ สิทธิ์ 2 ตัวนี้ทำให้แอปคงขนาดหน้าจอไว้ทุกครั้งที่เปิดเครื่อง
-และต้องสั่งเปิดแอปหนึ่งครั้ง ไม่เช่นนั้น Android จะไม่ให้แอปทำงานตอนเปิดเครื่อง
-
-### 3. ติดตั้ง QRV-Hub
-
-```sh
-adb install QRV-Hub-1.0.1.apk
-```
-
-### 4. ติดตั้ง QRV-Hub Launcher (หน้าโฮม)
-
-```sh
-adb install QRV-Hub-Launcher-1.0.1.apk
-adb shell dpm set-device-owner me.narun.apps.qrvhub.launcher/.AdminReceiver
-adb shell am start -n me.narun.apps.qrvhub.launcher/.HomeActivity
-```
-
-Launcher จะเป็นหน้าโฮมและเป็น *device owner* ซึ่งทำให้ปิดแอปวิทยุที่ไม่ได้ใช้ได้สนิท
-Android ยอมตั้ง device owner เฉพาะเมื่อในวิทยุ **ไม่มีบัญชีผู้ใช้** (เช่น Google account)
-ถ้าคำสั่ง `dpm` ไม่ยอม ให้ลบบัญชีออกก่อน
-
-### 5. เริ่มใช้งาน
-
-Launcher จะเปิด QRV-Hub ให้ทันที ใส่ชื่อผู้ใช้และรหัสผ่าน แล้วเลือก **Connect**
-ต่อไปทุกครั้งที่เปิดเครื่อง วิทยุจะเปิด QRV-Hub ให้เอง
-
-กด **Home** เพื่อกลับไปหน้า Launcher (จะถามก่อนปิด QRV-Hub) ซึ่งให้เลือก **QRV-Hub** หรือ
-**Spender Network** ด้วยปุ่ม ▲/▼ แล้วกด OK
-
-ถอดสาย USB ได้เลย สายใช้แค่ตอนติดตั้ง
-
-### อัปเดตเวอร์ชันใหม่
-
-ดาวน์โหลด APK ใหม่ แล้วติดตั้งทับของเดิม ข้อมูลเข้าสู่ระบบและการตั้งค่ายังอยู่ครบ:
-
-```sh
-adb install -r QRV-Hub-<เวอร์ชัน>.apk
-```
-
-### ถอนการติดตั้งทั้งหมด
-
-```sh
-adb shell am broadcast -a me.narun.apps.qrvhub.launcher.RELEASE
-adb uninstall me.narun.apps.qrvhub.launcher
-adb uninstall me.narun.apps.qrvhub
-adb uninstall me.narun.apps.qrvhub.display
-adb shell wm size reset
-```
-
-บรรทัดแรกคืนหน้าโฮมเดิมของวิทยุและแสดง Spender Network ตามเดิม บรรทัดสุดท้ายคืนขนาดหน้าจอเดิม
 
 ## คู่มือการใช้งาน
 
