@@ -501,12 +501,12 @@ public class MainActivity extends Activity implements QrvHubService.UiListener {
             }
         }
         // The Mumble names stay as the speaking lines; the feed gets its own line
-        // ("Warroom", WSS) only when no name from FEED_CHANNEL shows.
+        // (FEED_CHANNEL, WSS) only when no name from that channel shows.
         if (mService.isFeedVoice()) {
             String feedTag = getString(R.string.feed_tag);
             boolean named = false;
             for (String[] t : talkers) if (feedTag.equals(t[1])) named = true;
-            if (!named) talkers.add(new String[] { getString(R.string.feed_name), feedTag });
+            if (!named) talkers.add(new String[] { feedChannel, feedTag });
         }
 
         if (!mChannelsPage) {

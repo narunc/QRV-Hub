@@ -68,7 +68,6 @@
     <string name="menu_screen_rx_on">Screen on while receiving: On</string>
     <string name="menu_screen_rx_off">Screen on while receiving: Off</string>
     <string name="fb_screen_rx">Screen on while receiving</string>
-    <string name="feed_name">Warroom</string>
     <!-- Tag on a speaking line whose audio comes from the Warroom feed (its WebSocket). -->
     <string name="feed_tag" translatable="false">WSS</string>
     <string name="menu_feed_on">Use Warroom instead of %1$s: On</string>
