@@ -477,10 +477,14 @@ public class MainActivity extends Activity implements QrvHubService.UiListener {
         mHeaderMute.setVisibility(mService.isMuted() ? View.VISIBLE : View.GONE);
         mHintLock.setText(locked ? R.string.hint_unlock : R.string.hint_lock);
 
-        // Talkers: own channel first (no tag), then listened channels (tagged).
+        // Talkers: own channel first (no tag), then listened channels (tagged). While the
+        // Warroom feed replaces FEED_CHANNEL's audio, that channel's lines are tagged WSS.
+        String wss = mService.isFeedReplacing() ? getString(R.string.feed_tag) : null;
+        String feedChannel = BuildConfig.FEED_CHANNEL;
         List<String[]> talkers = new ArrayList<>();
+        String ownTag = wss != null && feedChannel.equals(current.getName()) ? wss : null;
         for (IUser u : users) {
-            if (u.getSession() != self && isTalking(u)) talkers.add(new String[] { u.getName(), null });
+            if (u.getSession() != self && isTalking(u)) talkers.add(new String[] { u.getName(), ownTag });
         }
         for (int id : listening) {
             if (id == current.getId()) continue;
@@ -491,13 +495,18 @@ public class MainActivity extends Activity implements QrvHubService.UiListener {
                 continue;
             }
             if (lc == null) continue;
+            String tag = wss != null && feedChannel.equals(lc.getName()) ? wss : lc.getName();
             for (IUser u : lc.getUsers()) {
-                if (u.getSession() != self && isTalking(u)) talkers.add(new String[] { u.getName(), lc.getName() });
+                if (u.getSession() != self && isTalking(u)) talkers.add(new String[] { u.getName(), tag });
             }
         }
-        // The Warroom feed (over-the-air audio of its channel) as its own speaking line.
+        // The Mumble names stay as the speaking lines; the feed gets its own line
+        // ("Warroom", WSS) only when no name from FEED_CHANNEL shows.
         if (mService.isFeedVoice()) {
-            talkers.add(new String[] { getString(R.string.feed_name), BuildConfig.FEED_CHANNEL });
+            String feedTag = getString(R.string.feed_tag);
+            boolean named = false;
+            for (String[] t : talkers) if (feedTag.equals(t[1])) named = true;
+            if (!named) talkers.add(new String[] { getString(R.string.feed_name), feedTag });
         }
 
         if (!mChannelsPage) {
@@ -718,11 +727,11 @@ public class MainActivity extends Activity implements QrvHubService.UiListener {
                     });
             if (mService.hasFeed()) {
                 final boolean feed = Prefs.warroomFeed(this);
-                addMenu(rows, getString(feed ? R.string.menu_feed_on : R.string.menu_feed_off),
+                addMenu(rows, getString(feed ? R.string.menu_feed_on : R.string.menu_feed_off, BuildConfig.FEED_CHANNEL),
                         R.drawable.ic_speaker, sub, () -> {
                             Prefs.setWarroomFeed(this, !feed);
                             mService.updateFeed();
-                            showFeedback(QrvHubService.FB_INFO, getString(R.string.fb_feed),
+                            showFeedback(QrvHubService.FB_INFO, getString(R.string.fb_feed, BuildConfig.FEED_CHANNEL),
                                     getString(!feed ? R.string.on : R.string.off));
                         });
             }

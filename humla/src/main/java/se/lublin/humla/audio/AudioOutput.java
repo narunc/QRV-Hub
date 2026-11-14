@@ -16,7 +16,8 @@
  *
  * Modified in 2026 by Narun Chanyavilas <opensource@narun.me> for QRV-Hub:
  * output gain, track paused at gain 0, playback start/stop listener, speaker logging.
- * Also: an external source (e.g. a stream) mixed in with the speakers.
+ * Also: an external source (e.g. a stream) mixed in with the speakers, and a
+ * filter for speakers that are decoded but not played.
  */
 
 package se.lublin.humla.audio;
@@ -101,8 +102,21 @@ public class AudioOutput implements Runnable, AudioOutputSpeech.TalkStateListene
     }
 
     private static volatile ExternalSource sExternal;
+
+    /** Decides which speakers are decoded but not played (e.g. replaced by another source). */
+    public interface SpeakerFilter {
+        boolean isSilenced(User user);
+    }
+
+    private static volatile SpeakerFilter sSpeakerFilter;
+
+    public static void setSpeakerFilter(SpeakerFilter filter) {
+        sSpeakerFilter = filter;
+    }
     private static volatile AudioOutput sCurrent;
     private float[] mExternalBuffer;
+    /** The last fetch had live speakers that are silenced (decoded, not played). */
+    private volatile boolean mHadSilenced;
 
     public static void setExternalSource(ExternalSource source) {
         sExternal = source;
@@ -227,6 +241,19 @@ public class AudioOutput implements Runnable, AudioOutputSpeech.TalkStateListene
                     playing = true;
                 }
                 mAudioTrack.write(mix, 0, mBufferSize);
+            } else if (mHadSilenced) {
+                // Only silenced speakers: nothing to play (track paused, amplifier off),
+                // but keep decoding them at the real-time pace so they stay alive.
+                if (playing) {
+                    mAudioTrack.flush();
+                    mAudioTrack.pause();
+                    playing = false;
+                    notifyPlayback(false);
+                }
+                try {
+                    Thread.sleep(bufferMs);
+                } catch (InterruptedException ignored) {
+                }
             } else {
                 Log.v(TAG, "Pausing thread.");
                 synchronized (mInactiveLock) {
@@ -263,6 +290,7 @@ public class AudioOutput implements Runnable, AudioOutputSpeech.TalkStateListene
     private boolean fetchAudio(short[] buffer, int bufferOffset, int bufferSize) {
         Arrays.fill(buffer, bufferOffset, bufferOffset + bufferSize, (short) 0);
         final List<IAudioMixerSource<float[]>> sources = new ArrayList<>();
+        boolean silenced = false;
         try {
             mPacketLock.lock();
             // Parallelize decoding using a fixed thread pool equal to the number of cores
@@ -271,7 +299,13 @@ public class AudioOutput implements Runnable, AudioOutputSpeech.TalkStateListene
             for(Future<AudioOutputSpeech.Result> future : futureResults) {
                 AudioOutputSpeech.Result result = future.get();
                 if (result.isAlive()) {
-                    sources.add(result);
+                    // Still decoded (talk state, names), but left out of the sound if silenced.
+                    SpeakerFilter filter = sSpeakerFilter;
+                    if (filter == null || !filter.isSilenced(result.getSpeechOutput().getUser())) {
+                        sources.add(result);
+                    } else {
+                        silenced = true;
+                    }
                 } else {
                     AudioOutputSpeech speech = result.getSpeechOutput();
                     Log.v(TAG, "Deleted audio user " + speech.getUser().getName());
@@ -305,6 +339,7 @@ public class AudioOutput implements Runnable, AudioOutputSpeech.TalkStateListene
             }
         }
 
+        mHadSilenced = silenced;
         if (sources.size() == 0)
             return false;
 

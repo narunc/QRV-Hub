@@ -51,6 +51,7 @@ import java.util.Set;
 
 import se.lublin.humla.Constants;
 import se.lublin.humla.HumlaService;
+import se.lublin.humla.model.Channel;
 import se.lublin.humla.model.IChannel;
 import se.lublin.humla.model.Server;
 import se.lublin.humla.net.HumlaConnection;
@@ -230,6 +231,18 @@ public class QrvHubService extends HumlaService {
                 onTalkersChanged();
                 if (mUi != null) mUi.onListeningChanged(); // refresh the speaking lines
             });
+            // While the feed is healthy it replaces FEED_CHANNEL's audio: those speakers are
+            // still decoded (names on screen) but not played. If the feed is down, they play.
+            AudioOutput.setSpeakerFilter(user -> {
+                WarroomFeed feed = mFeed;
+                if (feed == null || !feed.isHealthy()) return false;
+                Channel ch = user.getChannel();
+                boolean silenced = ch != null && BuildConfig.FEED_CHANNEL.equals(ch.getName());
+                if (silenced && mSilencedLogged.add(user.getSession())) {
+                    Log.i(TAG, "warroom feed: " + user.getName() + " silenced, Warroom plays instead");
+                }
+                return silenced;
+            });
         }
 
         IntentFilter keys = new IntentFilter();
@@ -252,6 +265,7 @@ public class QrvHubService extends HumlaService {
     public void onDestroy() {
         unregisterObserver(mLedObserver);
         if (mFeed != null) mFeed.stop();
+        AudioOutput.setSpeakerFilter(null);
         AudioOutput.setPlaybackListener(null);
         setLed(0);
         if (mEventScreen != null && mEventScreen.isHeld()) mEventScreen.release();
@@ -528,9 +542,17 @@ public class QrvHubService extends HumlaService {
 
     private WarroomFeed mFeed;
     private boolean mFeedVoice;
+    /** Speakers already logged as silenced (audio thread only; cleared when the feed stops). */
+    private final Set<Integer> mSilencedLogged = java.util.Collections.synchronizedSet(new HashSet<Integer>());
 
     boolean hasFeed() {
         return mFeed != null;
+    }
+
+    /** The feed is up, so FEED_CHANNEL's audio comes from the Warroom, not from Mumble. */
+    boolean isFeedReplacing() {
+        WarroomFeed feed = mFeed;
+        return feed != null && feed.isHealthy();
     }
 
     /** The Warroom feed currently carries a voice (shown as a speaking line). */
@@ -539,14 +561,18 @@ public class QrvHubService extends HumlaService {
     }
 
     /**
-     * The feed plays while the main server's FEED_CHANNEL is heard: joined or monitored,
-     * and the MENU switch is on. It never runs on a test server.
+     * "Use Warroom instead of HS1AB": while the main server's FEED_CHANNEL is heard
+     * (joined or monitored) and the MENU switch is on, the feed plays in place of that
+     * channel's Mumble audio. It never runs on a test server.
      */
     void updateFeed() {
         if (mFeed == null) return;
         boolean want = Prefs.warroomFeed(this) && Prefs.testHost(this) == null && hearsFeedChannel();
         if (want && !mFeed.isRunning()) mFeed.start();
-        else if (!want && mFeed.isRunning()) mFeed.stop();
+        else if (!want && mFeed.isRunning()) {
+            mFeed.stop();
+            mSilencedLogged.clear();
+        }
     }
 
     private boolean hearsFeedChannel() {

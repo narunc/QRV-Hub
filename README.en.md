@@ -244,9 +244,9 @@ QRV-Hub is the set of fixes, measured and tested on the radio.
   is pinned (a changed certificate has to be trusted explicitly).
 * Push-to-talk on the PTT key, working with the screen off. The microphone is
   powered only while you talk.
-* **Warroom audio for HS1AB**: while HS1AB is joined or monitored, the over-the-air
-  audio from [feed.example.org](https://feed.example.org) is mixed in with Mumble,
-  and cut automatically while you transmit.
+* **Warroom audio for HS1AB**: while HS1AB is joined or monitored, its audio comes
+  from the [feed.example.org](https://feed.example.org) feed instead of Mumble,
+  cut automatically while you transmit.
 * **Monitor several channels at once**: stay in your own channel and listen to
   as many others as the server allows (Mumble 1.4 channel listening). Each
   speaker line shows which channel the voice comes from, the header shows how
@@ -311,21 +311,24 @@ server allows: follow several areas or teams from one radio.
 
 ### Warroom audio (HS1AB)
 
-In HS1AB, Mumble carries mostly what the HS1AB station sends out; what the station
-receives over the air is in the audio feed of
-[feed.example.org](https://feed.example.org). QRV-Hub plays both together.
+The audio feed of [feed.example.org](https://feed.example.org) carries everything
+heard in HS1AB, including what the HS1AB station receives over the air. With MENU ›
+**Use Warroom instead of HS1AB** on (the default), QRV-Hub plays that feed as HS1AB's
+audio and does not play HS1AB's Mumble audio, so nothing is heard twice.
 
 * **Starts by itself** while you are in HS1AB or monitor it, and **stops by itself**
   when you leave or stop monitoring.
+* **Falls back to Mumble** when the feed is down (no audio from it for 3 s): HS1AB's
+  Mumble audio plays again until the feed is back. Other channels are not affected.
 * **Cut the moment you press PTT**, and back 2 s after release, so your own
   transmission does not come back to you.
 * Plays only while there is a voice (the speaker stays off between voices), at
   QRV-Hub's volume, and stays silent when muted.
-* While the feed carries a voice, a green **Warroom** line shows at the bottom and
-  the LED is green (yellow when muted).
-* Some speech may be heard twice: the Warroom feed mixes several nodes, including
-  E2HUB itself.
-* Uses about 10 MB per hour while in HS1AB; switch it in MENU › **Warroom feed**.
+* Speaking lines whose audio comes from the feed carry a **WSS** tag on the right. The
+  names of HS1AB speakers on Mumble still show; when the feed carries a voice and no
+  HS1AB name is shown, the line reads **Warroom**. The LED is green (yellow when muted).
+* Uses about 10 MB per hour while in HS1AB. Switch the option Off to hear HS1AB from
+  Mumble only.
 
 ## Troubleshooting
 

@@ -113,6 +113,14 @@ final class WarroomFeed implements AudioOutput.ExternalSource {
         return mRunning;
     }
 
+    private static final long HEALTHY_MS = 3000;
+    private volatile long mLastFrameAt;
+
+    /** Connected and receiving: frames (voice or silence) arrived within the last 3 s. */
+    boolean isHealthy() {
+        return mRunning && SystemClock.elapsedRealtime() - mLastFrameAt < HEALTHY_MS;
+    }
+
     boolean isVoice() {
         synchronized (mLock) {
             return mVoice;
@@ -347,6 +355,7 @@ final class WarroomFeed implements AudioOutput.ExternalSource {
     /** "W" v1 message: decode each Opus frame and queue it. */
     private void onAudioMessage(byte[] m, ByteBuffer opus, float[] pcm, Opus.OpusDecoder decoder) {
         if (m.length < 12 || m[0] != 'W' || m[1] != 1) return;
+        mLastFrameAt = SystemClock.elapsedRealtime();
         int count = m[3] & 0xFF;
         int p = 12;
         boolean cut = cut();

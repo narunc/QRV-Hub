@@ -9,7 +9,7 @@ changes made in 2026 by Narun Chanyavilas <opensource@narun.me> for QRV-Hub:
 | `audio/AudioInput.java`, `protocol/AudioHandler.java` | The microphone is stopped while push-to-talk is idle and restarted on the next press (about 30 ms), instead of recording continuously. Saves battery. |
 | `net/HumlaConnection.java` | Keep-alive ping every 15 s instead of every 5 s (the server allows 30 s). Fewer radio wake-ups. |
 | `src/main/jni/Application.mk` | Source paths in the native libraries are recorded relative to the project (`-ffile-prefix-map`), so built APKs do not contain the build machine's folder names. |
-| `audio/AudioOutput.java` | An output gain that QRV-Hub sets for its own volume scale; at gain 0 the audio track stays paused so the speaker amplifier stays off; a listener told when playback starts and stops; each new speaker is logged with their channel and the server's voice context. An extra external source can be mixed in with the speakers (QRV-Hub's Warroom feed). |
+| `audio/AudioOutput.java` | An output gain that QRV-Hub sets for its own volume scale; at gain 0 the audio track stays paused so the speaker amplifier stays off; a listener told when playback starts and stops; each new speaker is logged with their channel and the server's voice context. An extra external source can be mixed in with the speakers, and chosen speakers can be decoded without being played (QRV-Hub's Warroom feed replaces HS1AB's audio). |
 
 The native codecs (`src/main/jni/opus`, `speex`, `celt-*`) and
 `libs/humla-spongycastle` are unmodified upstream projects, included as git
