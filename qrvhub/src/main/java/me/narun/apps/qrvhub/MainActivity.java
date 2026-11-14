@@ -495,6 +495,10 @@ public class MainActivity extends Activity implements QrvHubService.UiListener {
                 if (u.getSession() != self && isTalking(u)) talkers.add(new String[] { u.getName(), lc.getName() });
             }
         }
+        // The Warroom feed (over-the-air audio of its channel) as its own speaking line.
+        if (mService.isFeedVoice()) {
+            talkers.add(new String[] { getString(R.string.feed_name), BuildConfig.FEED_CHANNEL });
+        }
 
         if (!mChannelsPage) {
             for (IUser u : users) {
@@ -712,6 +716,16 @@ public class MainActivity extends Activity implements QrvHubService.UiListener {
                         showFeedback(QrvHubService.FB_INFO, getString(R.string.fb_screen_rx),
                                 getString(!rx ? R.string.on : R.string.off));
                     });
+            if (mService.hasFeed()) {
+                final boolean feed = Prefs.warroomFeed(this);
+                addMenu(rows, getString(feed ? R.string.menu_feed_on : R.string.menu_feed_off),
+                        R.drawable.ic_speaker, sub, () -> {
+                            Prefs.setWarroomFeed(this, !feed);
+                            mService.updateFeed();
+                            showFeedback(QrvHubService.FB_INFO, getString(R.string.fb_feed),
+                                    getString(!feed ? R.string.on : R.string.off));
+                        });
+            }
         }
         addMenu(rows, getString(R.string.menu_about), R.drawable.ic_info, sub, this::showAbout);
         addMenu(rows, getString(R.string.menu_logout), R.drawable.ic_power, sub, this::logOut);

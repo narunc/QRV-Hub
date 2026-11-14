@@ -68,6 +68,10 @@
     <string name="menu_screen_rx_on">Screen on while receiving: On</string>
     <string name="menu_screen_rx_off">Screen on while receiving: Off</string>
     <string name="fb_screen_rx">Screen on while receiving</string>
+    <string name="feed_name">Warroom</string>
+    <string name="menu_feed_on">Warroom feed: On</string>
+    <string name="menu_feed_off">Warroom feed: Off</string>
+    <string name="fb_feed">Warroom feed</string>
     <string name="fb_muted">Muted</string>
     <string name="fb_unmuted">Unmuted</string>
     <string name="fb_mute_detail">Double-press power to toggle</string>

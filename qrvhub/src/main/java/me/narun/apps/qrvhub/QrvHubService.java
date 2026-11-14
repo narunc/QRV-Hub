@@ -223,6 +223,14 @@ public class QrvHubService extends HumlaService {
         mLockNotice.setReferenceCounted(false);
         registerObserver(mLedObserver);
         initVolume();
+        if (!BuildConfig.FEED_URL.isEmpty()) {
+            mFeed = new WarroomFeed(this, BuildConfig.FEED_URL, BuildConfig.FEED_ORIGIN, voice -> {
+                Log.i(TAG, "warroom feed voice: " + (voice ? "start" : "end"));
+                mFeedVoice = voice;
+                onTalkersChanged();
+                if (mUi != null) mUi.onListeningChanged(); // refresh the speaking lines
+            });
+        }
 
         IntentFilter keys = new IntentFilter();
         keys.addAction(KEY_PREFIX + "ptt.down");
@@ -243,6 +251,7 @@ public class QrvHubService extends HumlaService {
     @Override
     public void onDestroy() {
         unregisterObserver(mLedObserver);
+        if (mFeed != null) mFeed.stop();
         AudioOutput.setPlaybackListener(null);
         setLed(0);
         if (mEventScreen != null && mEventScreen.isHeld()) mEventScreen.release();
@@ -375,6 +384,7 @@ public class QrvHubService extends HumlaService {
         mPreSyncListening.clear();
         reapplyListening();
         mMain.post(this::logOwnChannel);
+        mMain.post(this::updateFeed);
     }
 
     @Override
@@ -394,6 +404,7 @@ public class QrvHubService extends HumlaService {
         mListening.clear();
         mPreSyncListening.clear();
         if (mUi != null) mUi.onListeningChanged();
+        mMain.post(this::updateFeed);
         if (!mSessionActive) return;
         if (mRejectedChain != null) {
             if (isReconnecting()) cancelReconnect();
@@ -460,6 +471,7 @@ public class QrvHubService extends HumlaService {
         }
         setTalkingState(on);
         mPttHeld = on;
+        if (mFeed != null) mFeed.setPtt(on);
         updateScreen();
         updateLed();
     }
@@ -512,6 +524,45 @@ public class QrvHubService extends HumlaService {
         }
     };
 
+    // ---- Warroom feed --------------------------------------------------------------
+
+    private WarroomFeed mFeed;
+    private boolean mFeedVoice;
+
+    boolean hasFeed() {
+        return mFeed != null;
+    }
+
+    /** The Warroom feed currently carries a voice (shown as a speaking line). */
+    boolean isFeedVoice() {
+        return mFeedVoice;
+    }
+
+    /**
+     * The feed plays while the main server's FEED_CHANNEL is heard: joined or monitored,
+     * and the MENU switch is on. It never runs on a test server.
+     */
+    void updateFeed() {
+        if (mFeed == null) return;
+        boolean want = Prefs.warroomFeed(this) && Prefs.testHost(this) == null && hearsFeedChannel();
+        if (want && !mFeed.isRunning()) mFeed.start();
+        else if (!want && mFeed.isRunning()) mFeed.stop();
+    }
+
+    private boolean hearsFeedChannel() {
+        try {
+            if (!isSynchronized()) return false;
+            String name = BuildConfig.FEED_CHANNEL;
+            if (name.equals(getSessionChannel().getName())) return true;
+            for (int id : mListening) {
+                IChannel ch = getChannel(id);
+                if (ch != null && name.equals(ch.getName())) return true;
+            }
+        } catch (RuntimeException ignored) {
+        }
+        return false;
+    }
+
     /** Muted is simply volume 0: nothing is played, the LED shows the muted patterns. */
     boolean isMuted() {
         return mVolume <= 0;
@@ -561,7 +612,7 @@ public class QrvHubService extends HumlaService {
     /** Called after PTT or the set of talkers changes, and when an option is toggled. */
     void updateScreen() {
         boolean want = (mPttHeld && Prefs.screenOnPtt(this))
-                || (!mTalkers.isEmpty() && Prefs.screenOnReceive(this) && !isMuted());
+                || ((!mTalkers.isEmpty() || mFeedVoice) && Prefs.screenOnReceive(this) && !isMuted());
         if (want) {
             // A reply within 5 s of the previous event continues that wake-up.
             boolean continued = mScreenOffPending;
@@ -601,7 +652,10 @@ public class QrvHubService extends HumlaService {
         @Override public void onUserJoinedChannel(IUser user, IChannel n, IChannel o) {
             final int session = user.getSession();
             mMain.post(() -> {
-                if (isSynchronized() && session == getSessionId()) logOwnChannel();
+                if (isSynchronized() && session == getSessionId()) {
+                    logOwnChannel();
+                    updateFeed();
+                }
                 updateLed();
             });
         }
@@ -637,7 +691,8 @@ public class QrvHubService extends HumlaService {
         int want = 0;
         try {
             // Yellow (3) instead of green while muted: someone talks, you do not hear it.
-            if (isSynchronized()) want = isTalking() ? 1 : !mTalkers.isEmpty() ? (isMuted() ? 3 : 2) : 0;
+            boolean heard = !mTalkers.isEmpty() || mFeedVoice;
+            if (isSynchronized()) want = isTalking() ? 1 : heard ? (isMuted() ? 3 : 2) : 0;
         } catch (RuntimeException ignored) {
         }
         // Idle and muted: where the firmware would flash green, flash yellow instead.
@@ -1097,6 +1152,7 @@ public class QrvHubService extends HumlaService {
         mListening.removeAll(remove);
         Log.i(TAG, "listening confirmed: " + mListening);
         if (mUi != null) mUi.onListeningChanged();
+        updateFeed();
     }
 
     /** repeated uint32 from the unknown-field set, packed or not. */

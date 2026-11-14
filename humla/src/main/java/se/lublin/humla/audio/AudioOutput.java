@@ -16,6 +16,7 @@
  *
  * Modified in 2026 by Narun Chanyavilas <opensource@narun.me> for QRV-Hub:
  * output gain, track paused at gain 0, playback start/stop listener, speaker logging.
+ * Also: an external source (e.g. a stream) mixed in with the speakers.
  */
 
 package se.lublin.humla.audio;
@@ -87,6 +88,36 @@ public class AudioOutput implements Runnable, AudioOutputSpeech.TalkStateListene
         sPlaybackListener = listener;
     }
 
+    /**
+     * An extra audio source mixed in with the speakers, e.g. an external stream.
+     * Called on the audio thread with the number of samples wanted.
+     */
+    public interface ExternalSource {
+        /**
+         * Fills {@code out[0..n)} with 48 kHz mono samples in [-1, 1].
+         * @return true if the buffer holds audio to play, false to play nothing.
+         */
+        boolean read(float[] out, int n);
+    }
+
+    private static volatile ExternalSource sExternal;
+    private static volatile AudioOutput sCurrent;
+    private float[] mExternalBuffer;
+
+    public static void setExternalSource(ExternalSource source) {
+        sExternal = source;
+        wakeOutput();
+    }
+
+    /** Wakes the audio thread, e.g. when the external source has new audio. */
+    public static void wakeOutput() {
+        AudioOutput out = sCurrent;
+        if (out == null) return;
+        synchronized (out.mInactiveLock) {
+            out.mInactiveLock.notify();
+        }
+    }
+
     private static void notifyPlayback(boolean starting) {
         PlaybackListener l = sPlaybackListener;
         if (l == null) return;
@@ -121,6 +152,7 @@ public class AudioOutput implements Runnable, AudioOutputSpeech.TalkStateListene
             throw new AudioInitializationException(e);
         }
 
+        sCurrent = this;
         mThread = new Thread(this);
         mThread.start();
         return mThread;
@@ -148,6 +180,7 @@ public class AudioOutput implements Runnable, AudioOutputSpeech.TalkStateListene
         mPacketLock.unlock();
 
         mAudioOutputs.clear();
+        if (sCurrent == this) sCurrent = null;
         mAudioTrack.release();
         mAudioTrack = null;
     }
@@ -254,6 +287,22 @@ public class AudioOutput implements Runnable, AudioOutputSpeech.TalkStateListene
             return false;
         } finally {
             mPacketLock.unlock();
+        }
+
+        final ExternalSource external = sExternal;
+        if (external != null) {
+            if (mExternalBuffer == null || mExternalBuffer.length < bufferSize) {
+                mExternalBuffer = new float[bufferSize];
+            }
+            final float[] ext = mExternalBuffer;
+            java.util.Arrays.fill(ext, 0, bufferSize, 0f);
+            if (external.read(ext, bufferSize)) {
+                final int n = bufferSize;
+                sources.add(new IAudioMixerSource<float[]>() {
+                    @Override public float[] getSamples() { return ext; }
+                    @Override public int getNumSamples() { return n; }
+                });
+            }
         }
 
         if (sources.size() == 0)

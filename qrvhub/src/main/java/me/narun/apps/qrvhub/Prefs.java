@@ -48,7 +48,7 @@ final class Prefs {
         return testHost(c) != null;
     }
 
-    private static String testHost(Context c) {
+    static String testHost(Context c) {
         String h = sp(c).getString("test_host", null);
         return (h == null || h.isEmpty()) ? null : h;
     }
@@ -120,6 +120,15 @@ final class Prefs {
         boolean muted = sp(c).getBoolean("muted", false);
         if (sp(c).contains("muted")) sp(c).edit().remove("muted").apply();
         return muted;
+    }
+
+    /** Play the Warroom feed while its channel is heard (MENU switch). On by default. */
+    static boolean warroomFeed(Context c) {
+        return sp(c).getBoolean("warroom_feed", true);
+    }
+
+    static void setWarroomFeed(Context c, boolean on) {
+        sp(c).edit().putBoolean("warroom_feed", on).apply();
     }
 
     static boolean screenOnReceive(Context c) {
