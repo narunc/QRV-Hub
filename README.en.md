@@ -31,7 +31,7 @@ Mumble library they build on:
 * [Key features](#key-features)
 * [Using it](#using-it)
   * [Monitoring several channels](#monitoring-several-channels)
-  * [Warroom audio (HS1AB)](#warroom-audio-hs1ab)
+  * [WSS feed (HS1AB)](#wss-feed-hs1ab)
 * [Troubleshooting](#troubleshooting)
 * [Building](#building)
 * [How it fits the radio](#how-it-fits-the-radio)
@@ -244,9 +244,8 @@ QRV-Hub is the set of fixes, measured and tested on the radio.
   is pinned (a changed certificate has to be trusted explicitly).
 * Push-to-talk on the PTT key, working with the screen off. The microphone is
   powered only while you talk.
-* **Warroom audio for HS1AB**: while HS1AB is joined or monitored, its audio comes
-  from the [feed.example.org](https://feed.example.org) feed instead of Mumble,
-  cut automatically while you transmit.
+* **WSS feed for HS1AB**: while HS1AB is joined or monitored, its audio comes
+  from the WSS feed instead of Mumble, cut automatically while you transmit.
 * **Monitor several channels at once**: stay in your own channel and listen to
   as many others as the server allows (Mumble 1.4 channel listening). Each
   speaker line shows which channel the voice comes from, the header shows how
@@ -309,9 +308,9 @@ server allows: follow several areas or teams from one radio.
 * Needs a Mumble 1.4 or newer server; each monitored channel adds battery use
   in proportion to how much is said there.
 
-### Warroom audio (HS1AB)
+### WSS feed (HS1AB)
 
-The audio feed of [feed.example.org](https://feed.example.org) (called **WSS** in the app) carries everything
+The WSS feed is an audio feed that carries everything
 heard in HS1AB, including what the HS1AB station receives over the air. With MENU ›
 **Use WSS for HS1AB** on (the default), QRV-Hub plays that feed as HS1AB's
 audio and does not play HS1AB's Mumble audio, so nothing is heard twice.
@@ -374,7 +373,7 @@ qrvhub.port=64738
 qrvhub.serverCert=qrvhub/server/my_server.pem
 ```
 
-An extra audio feed (the Warroom feed) is set with three more lines; leave
+An extra audio feed (the WSS feed) is set with three more lines; leave
 `qrvhub.feedUrl` empty to build without it:
 
 ```properties
