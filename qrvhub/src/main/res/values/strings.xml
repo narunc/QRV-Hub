@@ -70,9 +70,9 @@
     <string name="fb_screen_rx">Screen on while receiving</string>
     <!-- Tag on a speaking line whose audio comes from the Warroom feed (its WebSocket). -->
     <string name="feed_tag" translatable="false">WSS</string>
-    <string name="menu_feed_on">Use Warroom instead of %1$s: On</string>
-    <string name="menu_feed_off">Use Warroom instead of %1$s: Off</string>
-    <string name="fb_feed">Use Warroom instead of %1$s</string>
+    <string name="menu_feed_on">Use WSS instead of %1$s: On</string>
+    <string name="menu_feed_off">Use WSS instead of %1$s: Off</string>
+    <string name="fb_feed">Use WSS instead of %1$s</string>
     <string name="fb_muted">Muted</string>
     <string name="fb_unmuted">Unmuted</string>
     <string name="fb_mute_detail">Double-press power to toggle</string>

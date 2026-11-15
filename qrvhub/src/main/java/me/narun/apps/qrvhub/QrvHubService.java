@@ -575,7 +575,7 @@ public class QrvHubService extends HumlaService {
     }
 
     /**
-     * "Use Warroom instead of HS1AB": while the main server's FEED_CHANNEL is heard
+     * "Use WSS instead of HS1AB": while the main server's FEED_CHANNEL is heard
      * (joined or monitored) and the MENU switch is on, the feed plays in place of that
      * channel's Mumble audio. It never runs on a test server.
      */

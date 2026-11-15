@@ -311,9 +311,9 @@ server allows: follow several areas or teams from one radio.
 
 ### Warroom audio (HS1AB)
 
-The audio feed of [feed.example.org](https://feed.example.org) carries everything
+The audio feed of [feed.example.org](https://feed.example.org) (called **WSS** in the app) carries everything
 heard in HS1AB, including what the HS1AB station receives over the air. With MENU ›
-**Use Warroom instead of HS1AB** on (the default), QRV-Hub plays that feed as HS1AB's
+**Use WSS instead of HS1AB** on (the default), QRV-Hub plays that feed as HS1AB's
 audio and does not play HS1AB's Mumble audio, so nothing is heard twice.
 
 * **Starts by itself** while you are in HS1AB or monitor it, and **stops by itself**
