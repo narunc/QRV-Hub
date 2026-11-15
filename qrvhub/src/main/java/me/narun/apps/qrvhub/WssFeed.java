@@ -112,6 +112,14 @@ final class WssFeed implements AudioOutput.ExternalSource {
         mListener = listener;
     }
 
+    /** Undoes the build's scrambling of the feed address (see qrvhub/build.gradle). */
+    static String unscramble(String s) {
+        byte[] b = Base64.decode(s, Base64.DEFAULT);
+        byte[] k = "QRV-Hub/WSS".getBytes(Charset.forName("UTF-8"));
+        for (int i = 0; i < b.length; i++) b[i] = (byte) (b[i] ^ k[i % k.length] ^ ((i * 31) & 0xff));
+        return new String(b, Charset.forName("UTF-8"));
+    }
+
     boolean isRunning() {
         return mRunning;
     }

@@ -46,7 +46,7 @@ Mumble library they build on:
   [Android SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools)
   (unzip it; on Windows run the commands below in that folder, typing `adb` as `adb.exe` if needed).
 * The three APKs from the [latest release](https://github.com/narunc/QRV-Hub/releases/latest):
-  `QRV-Hub-1.0.2.apk`, `QRV-Hub-Launcher-1.0.2.apk`, `QRV-Hub-Display-1.0.2.apk`.
+  `QRV-Hub-1.0.3.apk`, `QRV-Hub-Launcher-1.0.3.apk`, `QRV-Hub-Display-1.0.3.apk`.
   Put them in the folder where you run the commands.
 
 ### 1. Connect the radio
@@ -64,7 +64,7 @@ add `-s <serial>` after `adb` in every command below.)
 ### 2. Install QRV-Hub Display (screen size)
 
 ```sh
-adb install QRV-Hub-Display-1.0.2.apk
+adb install QRV-Hub-Display-1.0.3.apk
 adb shell wm size 240x200
 adb shell pm grant me.narun.apps.qrvhub.display android.permission.WRITE_SECURE_SETTINGS
 adb shell pm grant me.narun.apps.qrvhub.display android.permission.DUMP
@@ -78,13 +78,13 @@ Android will not run it at boot.
 ### 3. Install QRV-Hub
 
 ```sh
-adb install QRV-Hub-1.0.2.apk
+adb install QRV-Hub-1.0.3.apk
 ```
 
 ### 4. Install QRV-Hub Launcher (home screen)
 
 ```sh
-adb install QRV-Hub-Launcher-1.0.2.apk
+adb install QRV-Hub-Launcher-1.0.3.apk
 adb shell dpm set-device-owner me.narun.apps.qrvhub.launcher/.AdminReceiver
 adb shell am start -n me.narun.apps.qrvhub.launcher/.HomeActivity
 ```
@@ -328,7 +328,9 @@ audio and does not play HS1AB's Mumble audio, so nothing is heard twice.
   HS1AB name is shown, the line reads **HS1AB**. The LED is green (yellow when muted).
 * A **WSS** badge at the top right shows the feed's state: green while it is connected and
   receiving, grey while it is connecting; no badge when the feed is not in use.
-* Uses about 10 MB per hour while in HS1AB. Switch the option Off to hear HS1AB from
+* Uses about 10 MB per hour while in HS1AB, and noticeably more battery: the feed is a
+  constant stream, so Wi-Fi or 4G never rests (measured roughly +100–150 mA on Wi-Fi and
+  +300–450 mA on 4G). Switch the option Off to hear HS1AB from
   Mumble only.
 
 ## Troubleshooting

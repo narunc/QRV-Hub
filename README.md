@@ -43,7 +43,7 @@ QRV-Hub คือแอปวิทยุสื่อสารแบบกดค
   [Android SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools) ของ Google
   (แตกไฟล์ zip แล้วพิมพ์คำสั่งด้านล่างในโฟลเดอร์นั้น บน Windows อาจต้องพิมพ์ `adb.exe` แทน `adb`)
 * ไฟล์ APK ทั้ง 3 ไฟล์จาก [release ล่าสุด](https://github.com/narunc/QRV-Hub/releases/latest):
-  `QRV-Hub-1.0.2.apk`, `QRV-Hub-Launcher-1.0.2.apk`, `QRV-Hub-Display-1.0.2.apk`
+  `QRV-Hub-1.0.3.apk`, `QRV-Hub-Launcher-1.0.3.apk`, `QRV-Hub-Display-1.0.3.apk`
   วางไว้ในโฟลเดอร์เดียวกับที่พิมพ์คำสั่ง
 
 ### 1. เชื่อมต่อวิทยุกับคอมพิวเตอร์
@@ -60,7 +60,7 @@ adb devices
 ### 2. ติดตั้ง QRV-Hub Display (ขนาดหน้าจอ)
 
 ```sh
-adb install QRV-Hub-Display-1.0.2.apk
+adb install QRV-Hub-Display-1.0.3.apk
 adb shell wm size 240x200
 adb shell pm grant me.narun.apps.qrvhub.display android.permission.WRITE_SECURE_SETTINGS
 adb shell pm grant me.narun.apps.qrvhub.display android.permission.DUMP
@@ -73,13 +73,13 @@ adb shell am start -n me.narun.apps.qrvhub.display/.MainActivity
 ### 3. ติดตั้ง QRV-Hub
 
 ```sh
-adb install QRV-Hub-1.0.2.apk
+adb install QRV-Hub-1.0.3.apk
 ```
 
 ### 4. ติดตั้ง QRV-Hub Launcher (หน้าโฮม)
 
 ```sh
-adb install QRV-Hub-Launcher-1.0.2.apk
+adb install QRV-Hub-Launcher-1.0.3.apk
 adb shell dpm set-device-owner me.narun.apps.qrvhub.launcher/.AdminReceiver
 adb shell am start -n me.narun.apps.qrvhub.launcher/.HomeActivity
 ```
@@ -313,7 +313,8 @@ QRV-Hub จะเล่นฟีดนี้เป็นเสียงของ
   ถ้าฟีดมีเสียงแต่ไม่มีชื่อจากช่อง HS1AB แสดง แถบจะแสดงคำว่า **HS1AB** ไฟ LED สีเขียว (สีเหลืองถ้าปิดเสียงอยู่)
 * ป้าย **WSS** มุมขวาบนบอกสถานะของฟีด: สีเขียวเมื่อเชื่อมต่อและรับเสียงอยู่ สีเทาขณะกำลังเชื่อมต่อ
   ไม่มีป้ายเมื่อไม่ได้ใช้ฟีด
-* ใช้ข้อมูลประมาณ 10 MB ต่อชั่วโมงขณะอยู่ในช่อง HS1AB ถ้าปิดตัวเลือกนี้ จะได้ยินช่อง HS1AB จาก Mumble อย่างเดียว
+* ใช้ข้อมูลประมาณ 10 MB ต่อชั่วโมงขณะอยู่ในช่อง HS1AB และใช้แบตเตอรี่มากขึ้นชัดเจน เพราะฟีดส่งข้อมูลต่อเนื่อง
+  ทำให้ Wi-Fi หรือ 4G ไม่ได้พัก (วัดได้ประมาณ +100–150 mA บน Wi-Fi และ +300–450 mA บน 4G) ถ้าปิดตัวเลือกนี้ จะได้ยินช่อง HS1AB จาก Mumble อย่างเดียว
 
 ### หน้าจอ
 

@@ -20,6 +20,16 @@ def feedUrl = setting('qrvhub.feedUrl')
 def feedOrigin = setting('qrvhub.feedOrigin')
 def feedChannel = setting('qrvhub.feedChannel')
 
+// The feed address is stored scrambled (XOR + Base64, undone by WssFeed.unscramble)
+// so it does not show as plain text in the APK. This only hides it from a casual look.
+def scramble = { String s ->
+    if (!s) return ''
+    byte[] b = s.getBytes('UTF-8')
+    byte[] k = 'QRV-Hub/WSS'.getBytes('UTF-8')
+    for (int i = 0; i < b.length; i++) b[i] = (byte) (b[i] ^ k[i % k.length] ^ ((i * 31) & 0xff))
+    return b.encodeBase64().toString()
+}
+
 def serverRes = layout.buildDirectory.dir('generated/serverRes')
 def copyServerCert = tasks.register('copyServerCert', Copy) {
     from(serverCert) { rename { 'server_cert.pem' } }
@@ -46,8 +56,8 @@ android {
     defaultConfig {
         buildConfigField 'String', 'SERVER_HOST', "\"${serverHost}\""
         buildConfigField 'int', 'SERVER_PORT', "${serverPort}"
-        buildConfigField 'String', 'FEED_URL', "\"${feedUrl}\""
-        buildConfigField 'String', 'FEED_ORIGIN', "\"${feedOrigin}\""
+        buildConfigField 'String', 'FEED_URL', "\"${scramble(feedUrl)}\""
+        buildConfigField 'String', 'FEED_ORIGIN', "\"${scramble(feedOrigin)}\""
         buildConfigField 'String', 'FEED_CHANNEL', "\"${feedChannel}\""
     }
 

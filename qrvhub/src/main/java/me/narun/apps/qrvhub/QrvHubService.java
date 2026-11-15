@@ -225,7 +225,8 @@ public class QrvHubService extends HumlaService {
         registerObserver(mLedObserver);
         initVolume();
         if (!BuildConfig.FEED_URL.isEmpty()) {
-            mFeed = new WssFeed(this, BuildConfig.FEED_URL, BuildConfig.FEED_ORIGIN, new WssFeed.Listener() {
+            mFeed = new WssFeed(this, WssFeed.unscramble(BuildConfig.FEED_URL),
+                    WssFeed.unscramble(BuildConfig.FEED_ORIGIN), new WssFeed.Listener() {
                 @Override
                 public void onFeedVoice(boolean voice) {
                     Log.i(TAG, "wss feed voice: " + (voice ? "start" : "end"));
