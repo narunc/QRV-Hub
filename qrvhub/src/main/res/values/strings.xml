@@ -68,7 +68,7 @@
     <string name="menu_screen_rx_on">Screen on while recv: On</string>
     <string name="menu_screen_rx_off">Screen on while recv: Off</string>
     <string name="fb_screen_rx">Screen on while recv</string>
-    <!-- Tag on a speaking line whose audio comes from the Warroom feed (its WebSocket). -->
+    <!-- Tag on a speaking line whose audio comes from the WSS feed (its WebSocket). -->
     <string name="feed_tag" translatable="false">WSS</string>
     <string name="menu_feed_on">Use WSS for %1$s: On</string>
     <string name="menu_feed_off">Use WSS for %1$s: Off</string>

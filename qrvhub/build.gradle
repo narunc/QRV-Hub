@@ -7,11 +7,18 @@ def serverHost = project.findProperty('qrvhub.host') ?: 'e2hub.vra.or.th'
 def serverPort = (project.findProperty('qrvhub.port') ?: '64738') as int
 def serverCert = rootProject.file(project.findProperty('qrvhub.serverCert') ?: 'qrvhub/server/server.pem')
 
-// Extra audio feed played while a channel is heard (the Warroom feed for HS1AB).
-// Leave qrvhub.feedUrl empty to build without it.
-def feedUrl = project.findProperty('qrvhub.feedUrl') ?: ''
-def feedOrigin = project.findProperty('qrvhub.feedOrigin') ?: ''
-def feedChannel = project.findProperty('qrvhub.feedChannel') ?: ''
+// Private settings (not in git): private.properties in the project root overrides
+// gradle.properties. Used for the WSS feed address, which is not published.
+def privateProps = new Properties()
+def privateFile = rootProject.file('private.properties')
+if (privateFile.exists()) privateFile.withInputStream { privateProps.load(it) }
+def setting = { String key -> privateProps.getProperty(key) ?: project.findProperty(key) ?: '' }
+
+// Extra audio feed played while a channel is heard (the WSS feed for HS1AB).
+// Without qrvhub.feedUrl the app is built without it.
+def feedUrl = setting('qrvhub.feedUrl')
+def feedOrigin = setting('qrvhub.feedOrigin')
+def feedChannel = setting('qrvhub.feedChannel')
 
 def serverRes = layout.buildDirectory.dir('generated/serverRes')
 def copyServerCert = tasks.register('copyServerCert', Copy) {

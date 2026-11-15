@@ -225,10 +225,10 @@ public class QrvHubService extends HumlaService {
         registerObserver(mLedObserver);
         initVolume();
         if (!BuildConfig.FEED_URL.isEmpty()) {
-            mFeed = new WarroomFeed(this, BuildConfig.FEED_URL, BuildConfig.FEED_ORIGIN, new WarroomFeed.Listener() {
+            mFeed = new WssFeed(this, BuildConfig.FEED_URL, BuildConfig.FEED_ORIGIN, new WssFeed.Listener() {
                 @Override
                 public void onFeedVoice(boolean voice) {
-                    Log.i(TAG, "warroom feed voice: " + (voice ? "start" : "end"));
+                    Log.i(TAG, "wss feed voice: " + (voice ? "start" : "end"));
                     mFeedVoice = voice;
                     onTalkersChanged();
                     if (mUi != null) mUi.onListeningChanged(); // refresh the speaking lines
@@ -242,12 +242,12 @@ public class QrvHubService extends HumlaService {
             // While the feed is healthy it replaces FEED_CHANNEL's audio: those speakers are
             // still decoded (names on screen) but not played. If the feed is down, they play.
             AudioOutput.setSpeakerFilter(user -> {
-                WarroomFeed feed = mFeed;
+                WssFeed feed = mFeed;
                 if (feed == null || !feed.isHealthy()) return false;
                 Channel ch = user.getChannel();
                 boolean silenced = ch != null && BuildConfig.FEED_CHANNEL.equals(ch.getName());
                 if (silenced && mSilencedLogged.add(user.getSession())) {
-                    Log.i(TAG, "warroom feed: " + user.getName() + " silenced, Warroom plays instead");
+                    Log.i(TAG, "wss feed: " + user.getName() + " silenced, the WSS feed plays instead");
                 }
                 return silenced;
             });
@@ -546,9 +546,9 @@ public class QrvHubService extends HumlaService {
         }
     };
 
-    // ---- Warroom feed --------------------------------------------------------------
+    // ---- WSS feed --------------------------------------------------------------
 
-    private WarroomFeed mFeed;
+    private WssFeed mFeed;
     private boolean mFeedVoice;
     /** Speakers already logged as silenced (audio thread only; cleared when the feed stops). */
     private final Set<Integer> mSilencedLogged = java.util.Collections.synchronizedSet(new HashSet<Integer>());
@@ -557,19 +557,19 @@ public class QrvHubService extends HumlaService {
         return mFeed != null;
     }
 
-    /** The feed is up, so FEED_CHANNEL's audio comes from the Warroom, not from Mumble. */
+    /** The feed is up, so FEED_CHANNEL's audio comes from the WSS feed, not from Mumble. */
     boolean isFeedReplacing() {
-        WarroomFeed feed = mFeed;
+        WssFeed feed = mFeed;
         return feed != null && feed.isHealthy();
     }
 
     /** The feed is running (connected or connecting): the WSS badge shows. */
     boolean isFeedRunning() {
-        WarroomFeed feed = mFeed;
+        WssFeed feed = mFeed;
         return feed != null && feed.isRunning();
     }
 
-    /** The Warroom feed currently carries a voice (shown as a speaking line). */
+    /** The WSS feed currently carries a voice (shown as a speaking line). */
     boolean isFeedVoice() {
         return mFeedVoice;
     }
@@ -581,7 +581,7 @@ public class QrvHubService extends HumlaService {
      */
     void updateFeed() {
         if (mFeed == null) return;
-        boolean want = Prefs.warroomFeed(this) && Prefs.testHost(this) == null && hearsFeedChannel();
+        boolean want = Prefs.wssFeed(this) && Prefs.testHost(this) == null && hearsFeedChannel();
         if (want && !mFeed.isRunning()) mFeed.start();
         else if (!want && mFeed.isRunning()) {
             mFeed.stop();

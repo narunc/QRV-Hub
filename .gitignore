@@ -7,3 +7,4 @@ local.properties
 captures/
 humla/src/main/libs/
 humla/src/main/obj/
+private.properties

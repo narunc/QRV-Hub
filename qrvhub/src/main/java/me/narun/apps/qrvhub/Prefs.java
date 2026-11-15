@@ -122,13 +122,13 @@ final class Prefs {
         return muted;
     }
 
-    /** Play the Warroom feed while its channel is heard (MENU switch). On by default. */
-    static boolean warroomFeed(Context c) {
-        return sp(c).getBoolean("warroom_feed", true);
+    /** Play the WSS feed while its channel is heard (MENU switch). On by default. */
+    static boolean wssFeed(Context c) {
+        return sp(c).getBoolean("wss_feed", true);
     }
 
-    static void setWarroomFeed(Context c, boolean on) {
-        sp(c).edit().putBoolean("warroom_feed", on).apply();
+    static void setWssFeed(Context c, boolean on) {
+        sp(c).edit().putBoolean("wss_feed", on).apply();
     }
 
     static boolean screenOnReceive(Context c) {

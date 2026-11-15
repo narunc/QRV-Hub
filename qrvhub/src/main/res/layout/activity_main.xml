@@ -125,7 +125,7 @@
             <ImageView android:id="@+id/header_listen" android:layout_width="18dp" android:layout_height="18dp"
                 android:layout_marginLeft="6dp" android:src="@drawable/ic_speaker" android:tint="@color/blue"
                 android:contentDescription="@null" android:visibility="gone" />
-            <!-- Warroom feed status: green = connected, grey = connecting (MainActivity). -->
+            <!-- WSS feed status: green = connected, grey = connecting (MainActivity). -->
             <TextView android:id="@+id/header_wss" android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp" android:background="@drawable/pill" android:paddingLeft="5dp"
                 android:paddingRight="5dp" android:text="@string/feed_tag" android:textColor="@color/sub"

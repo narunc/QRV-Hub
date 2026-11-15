@@ -473,7 +473,7 @@ public class MainActivity extends Activity implements QrvHubService.UiListener {
         if (!mChannelsPage && others > 0) sub.append(" · ").append(getString(R.string.listening_to, others));
         mHeaderSub.setText(sub);
         mHeaderListen.setVisibility(others > 0 ? View.VISIBLE : View.GONE);
-        // WSS badge: green while the Warroom feed is connected and receiving, grey while
+        // WSS badge: green while the WSS feed is connected and receiving, grey while
         // it is (re)connecting, hidden when it is not running.
         mHeaderWss.setVisibility(mService.isFeedRunning() ? View.VISIBLE : View.GONE);
         boolean receiving = mService.isFeedReplacing();
@@ -486,7 +486,7 @@ public class MainActivity extends Activity implements QrvHubService.UiListener {
         mHintLock.setText(locked ? R.string.hint_unlock : R.string.hint_lock);
 
         // Talkers: own channel first (no tag), then listened channels (tagged). While the
-        // Warroom feed replaces FEED_CHANNEL's audio, that channel's lines are tagged WSS.
+        // WSS feed replaces FEED_CHANNEL's audio, that channel's lines are tagged WSS.
         String wss = mService.isFeedReplacing() ? getString(R.string.feed_tag) : null;
         String feedChannel = BuildConfig.FEED_CHANNEL;
         List<String[]> talkers = new ArrayList<>();
@@ -734,10 +734,10 @@ public class MainActivity extends Activity implements QrvHubService.UiListener {
                                 getString(!rx ? R.string.on : R.string.off));
                     });
             if (mService.hasFeed()) {
-                final boolean feed = Prefs.warroomFeed(this);
+                final boolean feed = Prefs.wssFeed(this);
                 addMenu(rows, getString(feed ? R.string.menu_feed_on : R.string.menu_feed_off, BuildConfig.FEED_CHANNEL),
                         R.drawable.ic_broadcast, sub, () -> {
-                            Prefs.setWarroomFeed(this, !feed);
+                            Prefs.setWssFeed(this, !feed);
                             mService.updateFeed();
                             showFeedback(QrvHubService.FB_INFO, getString(R.string.fb_feed, BuildConfig.FEED_CHANNEL),
                                     getString(!feed ? R.string.on : R.string.off));

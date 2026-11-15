@@ -53,7 +53,7 @@ import se.lublin.humla.audio.javacpp.Opus;
 import se.lublin.humla.exception.NativeAudioException;
 
 /**
- * The Warroom audio feed (https://feed.example.org): an extra source mixed into
+ * The WSS audio feed (address set at build time): an extra source mixed into
  * QRV-Hub's audio output next to the Mumble voices.
  *
  * Protocol (the website's own, undocumented): a WebSocket that first sends a text
@@ -64,7 +64,7 @@ import se.lublin.humla.exception.NativeAudioException;
  * its decoded level is above a small floor. Only those stretches are played, so the
  * speaker stays off between voices. The server pings; we answer with pongs.
  */
-final class WarroomFeed implements AudioOutput.ExternalSource {
+final class WssFeed implements AudioOutput.ExternalSource {
     private static final String TAG = "QRV-Hub";
 
     interface Listener {
@@ -105,7 +105,7 @@ final class WarroomFeed implements AudioOutput.ExternalSource {
     private volatile Socket mSocket;
     private Thread mThread;
 
-    WarroomFeed(Context context, String url, String origin, Listener listener) {
+    WssFeed(Context context, String url, String origin, Listener listener) {
         mContext = context.getApplicationContext();
         mUrl = url;
         mOrigin = origin;
@@ -132,7 +132,7 @@ final class WarroomFeed implements AudioOutput.ExternalSource {
             boolean healthy = isHealthy();
             if (healthy != mHealthyShown) {
                 mHealthyShown = healthy;
-                Log.i(TAG, "warroom feed: " + (healthy ? "receiving" : "not receiving"));
+                Log.i(TAG, "wss feed: " + (healthy ? "receiving" : "not receiving"));
                 mListener.onFeedState();
             }
             if (mRunning) mMain.postDelayed(this, 1000);
@@ -148,11 +148,11 @@ final class WarroomFeed implements AudioOutput.ExternalSource {
     synchronized void start() {
         if (mRunning) return;
         mRunning = true;
-        mThread = new Thread(this::run, "QRV-Hub-warroom");
+        mThread = new Thread(this::run, "QRV-Hub-wss");
         mThread.setDaemon(true);
         mThread.start();
         AudioOutput.setExternalSource(this);
-        Log.i(TAG, "warroom feed: start");
+        Log.i(TAG, "wss feed: start");
         mMain.removeCallbacks(mHealthTick);
         mMain.post(mHealthTick);
         mMain.post(mListener::onFeedState);
@@ -168,7 +168,7 @@ final class WarroomFeed implements AudioOutput.ExternalSource {
             // the main thread (stop() is called from it), so close on a short thread.
             new Thread(() -> {
                 try { s.close(); } catch (IOException ignored) { }
-            }, "QRV-Hub-warroom-close").start();
+            }, "QRV-Hub-wss-close").start();
         }
         if (mThread != null) mThread.interrupt();
         mThread = null;
@@ -176,12 +176,12 @@ final class WarroomFeed implements AudioOutput.ExternalSource {
         mMain.removeCallbacks(mHealthTick);
         mHealthyShown = false;
         mMain.post(mListener::onFeedState);
-        Log.i(TAG, "warroom feed: stop");
+        Log.i(TAG, "wss feed: stop");
     }
 
     /** PTT held: the feed is cut, and stays cut PTT_TAIL_MS after release (no echo of ourselves). */
     void setPtt(boolean held) {
-        if (mRunning) Log.v(TAG, held ? "warroom feed: cut (PTT)" : "warroom feed: PTT released, back in 2 s");
+        if (mRunning) Log.v(TAG, held ? "wss feed: cut (PTT)" : "wss feed: PTT released, back in 2 s");
         mPtt = held;
         if (held) clear(); else mPttReleasedAt = SystemClock.elapsedRealtime();
     }
@@ -208,7 +208,7 @@ final class WarroomFeed implements AudioOutput.ExternalSource {
             if (!mPlaying) {
                 if (mQueue.size() < START_FRAMES) return false;
                 mPlaying = true;
-                Log.v(TAG, "warroom feed: playing");
+                Log.v(TAG, "wss feed: playing");
             }
             int pos = 0;
             while (pos < n) {
@@ -233,7 +233,7 @@ final class WarroomFeed implements AudioOutput.ExternalSource {
         try {
             decoder = new Opus.OpusDecoder(48000, 1);
         } catch (NativeAudioException e) {
-            Log.w(TAG, "warroom feed: no Opus decoder", e);
+            Log.w(TAG, "wss feed: no Opus decoder", e);
             mRunning = false;
             return;
         }
@@ -244,13 +244,13 @@ final class WarroomFeed implements AudioOutput.ExternalSource {
                     code = session(decoder);
                     retry = RETRY_MIN_MS;
                 } catch (IOException e) {
-                    if (mRunning) Log.i(TAG, "warroom feed: " + e.getMessage());
+                    if (mRunning) Log.i(TAG, "wss feed: " + e.getMessage());
                 }
                 clear();
                 if (!mRunning) break;
                 long wait = code == 1013 ? FULL_RETRY_MS : jitter(retry);
                 if (code != 1013) retry = Math.min(RETRY_MAX_MS, retry * 2);
-                Log.i(TAG, "warroom feed: reconnect in " + wait + " ms" + (code == 1013 ? " (server full)" : ""));
+                Log.i(TAG, "wss feed: reconnect in " + wait + " ms" + (code == 1013 ? " (server full)" : ""));
                 try {
                     Thread.sleep(wait);
                 } catch (InterruptedException e) {
@@ -287,7 +287,7 @@ final class WarroomFeed implements AudioOutput.ExternalSource {
             try {
                 tls.getClass().getMethod("setHostname", String.class).invoke(tls, host);
             } catch (Exception e) {
-                Log.w(TAG, "warroom feed: cannot set SNI host name", e);
+                Log.w(TAG, "wss feed: cannot set SNI host name", e);
             }
             tls.startHandshake();
             if (!HttpsURLConnection.getDefaultHostnameVerifier().verify(host, tls.getSession())) {
@@ -316,7 +316,7 @@ final class WarroomFeed implements AudioOutput.ExternalSource {
                 if (line == null) throw new IOException("handshake cut");
                 if (line.isEmpty()) break;
             }
-            Log.i(TAG, "warroom feed: connected");
+            Log.i(TAG, "wss feed: connected");
             return readFrames(in, out, decoder);
         } finally {
             try { socket.close(); } catch (IOException ignored) { }
@@ -346,7 +346,7 @@ final class WarroomFeed implements AudioOutput.ExternalSource {
                 case 0x8: { // close
                     int code = payload.length >= 2 ? ((payload[0] & 0xFF) << 8) | (payload[1] & 0xFF) : 0;
                     sendControl(out, 0x8, payload.length >= 2 ? new byte[] { payload[0], payload[1] } : new byte[0]);
-                    Log.i(TAG, "warroom feed: closed by server, code " + code);
+                    Log.i(TAG, "wss feed: closed by server, code " + code);
                     return code;
                 }
                 case 0x1: // text: audio_hello and similar; nothing to do
@@ -425,7 +425,7 @@ final class WarroomFeed implements AudioOutput.ExternalSource {
         if (now - mStatsAt >= 10000) {
             if (mStatAudio > 0) {
                 Log.v(TAG, String.format(java.util.Locale.US,
-                        "warroom feed: %d frames, %d with audio, %d voiced, level min %.4f max %.4f",
+                        "wss feed: %d frames, %d with audio, %d voiced, level min %.4f max %.4f",
                         mStatFrames, mStatAudio, mStatVoiced, mStatMinAudio, mStatMax));
             }
             mStatsAt = now;

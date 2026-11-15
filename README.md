@@ -372,13 +372,15 @@ qrvhub.port=64738
 qrvhub.serverCert=qrvhub/server/my_server.pem
 ```
 
-ฟีดเสียงเสริม (WSS feed) ตั้งค่าได้ 3 บรรทัด ถ้าไม่ต้องการ ให้เว้น `qrvhub.feedUrl` ว่างไว้:
+ฟีดเสียงเสริม (WSS feed) ไม่ได้เผยแพร่ที่อยู่ไว้ใน repository นี้ ถ้ามีที่อยู่ ให้สร้างไฟล์ `private.properties`
+ที่โฟลเดอร์บนสุดของโปรเจกต์ (ไฟล์นี้ไม่อยู่ใน git) แล้วใส่ 2 บรรทัด ถ้าไม่มีไฟล์นี้ แอปจะถูกสร้างโดยไม่มีฟีด:
 
 ```properties
 qrvhub.feedUrl=wss://feed.example.org/audio
 qrvhub.feedOrigin=https://feed.example.org
-qrvhub.feedChannel=HS1AB
 ```
+
+ช่องที่ฟีดแทนเสียงตั้งไว้ใน `gradle.properties` (`qrvhub.feedChannel=HS1AB`)
 
 ไฟล์ใบรับรอง (PEM) ของเซิร์ฟเวอร์ดึงได้ด้วยคำสั่ง:
 

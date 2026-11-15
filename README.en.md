@@ -373,14 +373,17 @@ qrvhub.port=64738
 qrvhub.serverCert=qrvhub/server/my_server.pem
 ```
 
-An extra audio feed (the WSS feed) is set with three more lines; leave
-`qrvhub.feedUrl` empty to build without it:
+The extra audio feed (the WSS feed) is not published in this repository. If you
+have its address, create `private.properties` in the project root (it is not in
+git) with two lines; without that file the app is built without the feed:
 
 ```properties
 qrvhub.feedUrl=wss://feed.example.org/audio
 qrvhub.feedOrigin=https://feed.example.org
-qrvhub.feedChannel=HS1AB
 ```
+
+The channel the feed replaces is set in `gradle.properties`
+(`qrvhub.feedChannel=HS1AB`).
 
 The certificate is your server's TLS certificate in PEM format. Mumble speaks
 TLS from the first byte, so you can fetch it with:
