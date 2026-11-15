@@ -225,11 +225,19 @@ public class QrvHubService extends HumlaService {
         registerObserver(mLedObserver);
         initVolume();
         if (!BuildConfig.FEED_URL.isEmpty()) {
-            mFeed = new WarroomFeed(this, BuildConfig.FEED_URL, BuildConfig.FEED_ORIGIN, voice -> {
-                Log.i(TAG, "warroom feed voice: " + (voice ? "start" : "end"));
-                mFeedVoice = voice;
-                onTalkersChanged();
-                if (mUi != null) mUi.onListeningChanged(); // refresh the speaking lines
+            mFeed = new WarroomFeed(this, BuildConfig.FEED_URL, BuildConfig.FEED_ORIGIN, new WarroomFeed.Listener() {
+                @Override
+                public void onFeedVoice(boolean voice) {
+                    Log.i(TAG, "warroom feed voice: " + (voice ? "start" : "end"));
+                    mFeedVoice = voice;
+                    onTalkersChanged();
+                    if (mUi != null) mUi.onListeningChanged(); // refresh the speaking lines
+                }
+
+                @Override
+                public void onFeedState() {
+                    if (mUi != null) mUi.onListeningChanged(); // refresh the WSS badge
+                }
             });
             // While the feed is healthy it replaces FEED_CHANNEL's audio: those speakers are
             // still decoded (names on screen) but not played. If the feed is down, they play.
@@ -553,6 +561,12 @@ public class QrvHubService extends HumlaService {
     boolean isFeedReplacing() {
         WarroomFeed feed = mFeed;
         return feed != null && feed.isHealthy();
+    }
+
+    /** The feed is running (connected or connecting): the WSS badge shows. */
+    boolean isFeedRunning() {
+        WarroomFeed feed = mFeed;
+        return feed != null && feed.isRunning();
     }
 
     /** The Warroom feed currently carries a voice (shown as a speaking line). */

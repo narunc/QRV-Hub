@@ -70,6 +70,9 @@ final class WarroomFeed implements AudioOutput.ExternalSource {
     interface Listener {
         /** The feed started or stopped carrying a voice (called on the main thread). */
         void onFeedVoice(boolean voice);
+
+        /** The feed was started or stopped, or became healthy or unhealthy (main thread). */
+        void onFeedState();
     }
 
     private static final int FRAME = 960;              // 20 ms at 48 kHz
@@ -121,6 +124,21 @@ final class WarroomFeed implements AudioOutput.ExternalSource {
         return mRunning && SystemClock.elapsedRealtime() - mLastFrameAt < HEALTHY_MS;
     }
 
+    /** Polls the health once a second on the main thread and reports changes. */
+    private boolean mHealthyShown;
+    private final Runnable mHealthTick = new Runnable() {
+        @Override
+        public void run() {
+            boolean healthy = isHealthy();
+            if (healthy != mHealthyShown) {
+                mHealthyShown = healthy;
+                Log.i(TAG, "warroom feed: " + (healthy ? "receiving" : "not receiving"));
+                mListener.onFeedState();
+            }
+            if (mRunning) mMain.postDelayed(this, 1000);
+        }
+    };
+
     boolean isVoice() {
         synchronized (mLock) {
             return mVoice;
@@ -135,6 +153,9 @@ final class WarroomFeed implements AudioOutput.ExternalSource {
         mThread.start();
         AudioOutput.setExternalSource(this);
         Log.i(TAG, "warroom feed: start");
+        mMain.removeCallbacks(mHealthTick);
+        mMain.post(mHealthTick);
+        mMain.post(mListener::onFeedState);
     }
 
     synchronized void stop() {
@@ -152,6 +173,9 @@ final class WarroomFeed implements AudioOutput.ExternalSource {
         if (mThread != null) mThread.interrupt();
         mThread = null;
         clear();
+        mMain.removeCallbacks(mHealthTick);
+        mHealthyShown = false;
+        mMain.post(mListener::onFeedState);
         Log.i(TAG, "warroom feed: stop");
     }
 

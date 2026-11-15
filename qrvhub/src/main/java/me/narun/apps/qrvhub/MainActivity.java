@@ -95,6 +95,7 @@ public class MainActivity extends Activity implements QrvHubService.UiListener {
     private TextView mStatusTitle, mStatusDetail, mStatusHint;
     private TextView mHeaderTitle, mHeaderSub;
     private View mHeaderListen, mHeaderHeadset, mHeaderLock, mHeaderMute;
+    private TextView mHeaderWss;
     private TextView mHintLock;
     private View mTxBar, mHintMembers, mHintChannels;
     private View[] mTalkerLines;
@@ -143,6 +144,7 @@ public class MainActivity extends Activity implements QrvHubService.UiListener {
         mHeaderTitle = findViewById(R.id.header_title);
         mHeaderSub = findViewById(R.id.header_sub);
         mHeaderListen = findViewById(R.id.header_listen);
+        mHeaderWss = findViewById(R.id.header_wss);
         mHeaderHeadset = findViewById(R.id.header_headset);
         mHeaderLock = findViewById(R.id.header_lock);
         mHeaderMute = findViewById(R.id.header_mute);
@@ -471,6 +473,12 @@ public class MainActivity extends Activity implements QrvHubService.UiListener {
         if (!mChannelsPage && others > 0) sub.append(" · ").append(getString(R.string.listening_to, others));
         mHeaderSub.setText(sub);
         mHeaderListen.setVisibility(others > 0 ? View.VISIBLE : View.GONE);
+        // WSS badge: green while the Warroom feed is connected and receiving, grey while
+        // it is (re)connecting, hidden when it is not running.
+        mHeaderWss.setVisibility(mService.isFeedRunning() ? View.VISIBLE : View.GONE);
+        boolean receiving = mService.isFeedReplacing();
+        mHeaderWss.setTextColor(getResources().getColor(receiving ? R.color.text : R.color.sub));
+        mHeaderWss.setBackgroundResource(receiving ? R.drawable.tag_channel : R.drawable.pill);
         mHeaderHeadset.setVisibility(mService.isHeadsetPlugged() ? View.VISIBLE : View.GONE);
         boolean locked = Prefs.pttLocked(this);
         mHeaderLock.setVisibility(locked ? View.VISIBLE : View.GONE);

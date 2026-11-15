@@ -116,9 +116,6 @@
                 <TextView android:id="@+id/header_sub" android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:textColor="@color/sub" android:textSize="15sp" android:singleLine="true" android:ellipsize="end" />
             </LinearLayout>
-            <ImageView android:id="@+id/header_mute" android:layout_width="18dp" android:layout_height="18dp"
-                android:layout_marginLeft="6dp" android:src="@drawable/ic_speaker_off" android:tint="@color/amber"
-                android:contentDescription="@null" android:visibility="gone" />
             <ImageView android:id="@+id/header_lock" android:layout_width="18dp" android:layout_height="18dp"
                 android:layout_marginLeft="6dp" android:src="@drawable/ic_lock" android:tint="@color/amber"
                 android:contentDescription="@null" android:visibility="gone" />
@@ -127,6 +124,16 @@
                 android:contentDescription="@null" android:visibility="gone" />
             <ImageView android:id="@+id/header_listen" android:layout_width="18dp" android:layout_height="18dp"
                 android:layout_marginLeft="6dp" android:src="@drawable/ic_speaker" android:tint="@color/blue"
+                android:contentDescription="@null" android:visibility="gone" />
+            <!-- Warroom feed status: green = connected, grey = connecting (MainActivity). -->
+            <TextView android:id="@+id/header_wss" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp" android:background="@drawable/pill" android:paddingLeft="5dp"
+                android:paddingRight="5dp" android:text="@string/feed_tag" android:textColor="@color/sub"
+                android:textSize="14sp" android:textStyle="bold" android:includeFontPadding="false"
+                android:paddingTop="2dp" android:paddingBottom="2dp" android:visibility="gone" />
+            <!-- Mute stays right-most so it sits in the same place on every channel. -->
+            <ImageView android:id="@+id/header_mute" android:layout_width="18dp" android:layout_height="18dp"
+                android:layout_marginLeft="6dp" android:src="@drawable/ic_speaker_off" android:tint="@color/amber"
                 android:contentDescription="@null" android:visibility="gone" />
         </LinearLayout>
         <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />

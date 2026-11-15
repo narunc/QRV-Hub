@@ -327,6 +327,8 @@ audio and does not play HS1AB's Mumble audio, so nothing is heard twice.
 * Speaking lines whose audio comes from the feed carry a **WSS** tag on the right. The
   names of HS1AB speakers on Mumble still show; when the feed carries a voice and no
   HS1AB name is shown, the line reads **HS1AB**. The LED is green (yellow when muted).
+* A **WSS** badge at the top right shows the feed's state: green while it is connected and
+  receiving, grey while it is connecting; no badge when the feed is not in use.
 * Uses about 10 MB per hour while in HS1AB. Switch the option Off to hear HS1AB from
   Mumble only.
 
