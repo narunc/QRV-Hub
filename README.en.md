@@ -262,7 +262,7 @@ QRV-Hub is the set of fixes, measured and tested on the radio.
 * **PTT lock** on ◀/▶, so a pocket press cannot transmit.
 * **LED**: red while you transmit, green while someone talks, yellow while
   someone talks and you are muted, slow yellow flash when muted and idle.
-* Optional **screen on while talking / while receiving** (off 5 s after).
+* Optional screen on while you talk or receive (MENU › **Screen on while talk** / **Screen on while recv**; off 5 s after).
 * Battery: no continuous microphone, normal Wi-Fi power saving, 15 s keep-alive.
 
 ## Using it
@@ -313,7 +313,7 @@ server allows: follow several areas or teams from one radio.
 
 The audio feed of [feed.example.org](https://feed.example.org) (called **WSS** in the app) carries everything
 heard in HS1AB, including what the HS1AB station receives over the air. With MENU ›
-**Use WSS instead of HS1AB** on (the default), QRV-Hub plays that feed as HS1AB's
+**Use WSS for HS1AB** on (the default), QRV-Hub plays that feed as HS1AB's
 audio and does not play HS1AB's Mumble audio, so nothing is heard twice.
 
 * **Starts by itself** while you are in HS1AB or monitor it, and **stops by itself**

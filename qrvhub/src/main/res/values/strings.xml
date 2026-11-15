@@ -62,17 +62,17 @@
     <string name="menu_listen">Listen to channel</string>
     <string name="menu_unlisten">Stop listening</string>
     <string name="menu_title_app">QRV-Hub</string>
-    <string name="menu_screen_ptt_on">Screen on while talking: On</string>
-    <string name="menu_screen_ptt_off">Screen on while talking: Off</string>
-    <string name="fb_screen_ptt">Screen on while talking</string>
-    <string name="menu_screen_rx_on">Screen on while receiving: On</string>
-    <string name="menu_screen_rx_off">Screen on while receiving: Off</string>
-    <string name="fb_screen_rx">Screen on while receiving</string>
+    <string name="menu_screen_ptt_on">Screen on while talk: On</string>
+    <string name="menu_screen_ptt_off">Screen on while talk: Off</string>
+    <string name="fb_screen_ptt">Screen on while talk</string>
+    <string name="menu_screen_rx_on">Screen on while recv: On</string>
+    <string name="menu_screen_rx_off">Screen on while recv: Off</string>
+    <string name="fb_screen_rx">Screen on while recv</string>
     <!-- Tag on a speaking line whose audio comes from the Warroom feed (its WebSocket). -->
     <string name="feed_tag" translatable="false">WSS</string>
-    <string name="menu_feed_on">Use WSS instead of %1$s: On</string>
-    <string name="menu_feed_off">Use WSS instead of %1$s: Off</string>
-    <string name="fb_feed">Use WSS instead of %1$s</string>
+    <string name="menu_feed_on">Use WSS for %1$s: On</string>
+    <string name="menu_feed_off">Use WSS for %1$s: Off</string>
+    <string name="fb_feed">Use WSS for %1$s</string>
     <string name="fb_muted">Muted</string>
     <string name="fb_unmuted">Unmuted</string>
     <string name="fb_mute_detail">Double-press power to toggle</string>
