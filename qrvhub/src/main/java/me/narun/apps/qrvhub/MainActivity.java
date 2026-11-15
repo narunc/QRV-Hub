@@ -736,7 +736,7 @@ public class MainActivity extends Activity implements QrvHubService.UiListener {
             if (mService.hasFeed()) {
                 final boolean feed = Prefs.warroomFeed(this);
                 addMenu(rows, getString(feed ? R.string.menu_feed_on : R.string.menu_feed_off, BuildConfig.FEED_CHANNEL),
-                        R.drawable.ic_speaker, sub, () -> {
+                        R.drawable.ic_broadcast, sub, () -> {
                             Prefs.setWarroomFeed(this, !feed);
                             mService.updateFeed();
                             showFeedback(QrvHubService.FB_INFO, getString(R.string.fb_feed, BuildConfig.FEED_CHANNEL),

@@ -59,7 +59,7 @@
     <string name="test_prefix">TEST</string>
 
     <!-- Menu -->
-    <string name="menu_listen">Listen to channel</string>
+    <string name="menu_listen">Listen to this channel</string>
     <string name="menu_unlisten">Stop listening</string>
     <string name="menu_title_app">QRV-Hub</string>
     <string name="menu_screen_ptt_on">Screen on while talk: On</string>
