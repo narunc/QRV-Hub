@@ -252,6 +252,7 @@ public class QrvHubService extends HumlaService {
                 }
                 return silenced;
             });
+            if (isMuted()) mMain.postDelayed(mFeedMutePause, FEED_MUTE_PAUSE_MS); // started muted
         }
 
         IntentFilter keys = new IntentFilter();
@@ -273,6 +274,7 @@ public class QrvHubService extends HumlaService {
     @Override
     public void onDestroy() {
         unregisterObserver(mLedObserver);
+        mMain.removeCallbacks(mFeedMutePause);
         if (mFeed != null) mFeed.stop();
         AudioOutput.setSpeakerFilter(null);
         AudioOutput.setPlaybackListener(null);
@@ -582,11 +584,34 @@ public class QrvHubService extends HumlaService {
      */
     void updateFeed() {
         if (mFeed == null) return;
-        boolean want = Prefs.wssFeed(this) && Prefs.testHost(this) == null && hearsFeedChannel();
+        boolean want = Prefs.wssFeed(this) && Prefs.testHost(this) == null && hearsFeedChannel()
+                && !mFeedMutePaused;
         if (want && !mFeed.isRunning()) mFeed.start();
         else if (!want && mFeed.isRunning()) {
             mFeed.stop();
             mSilencedLogged.clear();
+        }
+    }
+
+    /** Muted this long, the feed disconnects to save battery; unmuting reconnects it. */
+    private static final long FEED_MUTE_PAUSE_MS = 30000;
+    private boolean mFeedMutePaused;
+    private final Runnable mFeedMutePause = () -> {
+        if (!isMuted() || mFeedMutePaused) return;
+        mFeedMutePaused = true;
+        if (mFeed != null && mFeed.isRunning()) Log.i(TAG, "wss feed: muted 30 s, disconnecting");
+        updateFeed();
+    };
+
+    /** Called when muting or unmuting (volume to or from 0). */
+    private void onMuteChangedForFeed() {
+        mMain.removeCallbacks(mFeedMutePause);
+        if (isMuted()) {
+            mMain.postDelayed(mFeedMutePause, FEED_MUTE_PAUSE_MS);
+        } else if (mFeedMutePaused) {
+            mFeedMutePaused = false;
+            Log.i(TAG, "wss feed: unmuted, reconnecting");
+            updateFeed();
         }
     }
 
@@ -978,7 +1003,9 @@ public class QrvHubService extends HumlaService {
     }
 
     private void setVolumeLevel(int level) {
+        boolean wasMuted = isMuted();
         mVolume = level;
+        if (wasMuted != isMuted()) onMuteChangedForFeed();
         Prefs.setVolume(this, level);
         applyVolume();
         applySystemVolume();
